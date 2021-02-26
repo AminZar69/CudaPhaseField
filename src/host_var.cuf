@@ -1,0 +1,55 @@
+module host_var
+    use precision_m
+    implicit none
+    integer :: t, x, y
+    integer,parameter :: tf   = 160000
+    integer,parameter :: step = 4000
+    integer,parameter :: nx = 256
+    integer,parameter :: ny = 256
+	real(fp_kind),parameter :: density_host(3) = [1000., 500., 1.]
+	integer,parameter :: exhost(0:8) = [0, 1, 0,-1, 0, 1,-1,-1, 1]
+    integer,parameter :: eyhost(0:8) = [0, 0, 1, 0,-1, 1, 1,-1,-1]
+    real(fp_kind),parameter :: wahost(0:8) = [16,4, 4, 4, 4, 1, 1, 1, 1] / 36.
+    real(fp_kind),parameter :: r = 20.
+    real(fp_kind),parameter :: densityhost(3) = [1000., 500., 1.]
+    real(fp_kind),parameter :: sigmahost(3,3) = reshape((/0.1, 0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1/), (/3,3/))
+    real(fp_kind),parameter :: landahost(3) = [(sigmahost(2,1) +  &
+        sigmahost(3,1) &
+        - sigmahost(3,2)) &
+        , (sigmahost(2,1) + sigmahost(3,2) - sigmahost(3,1)) &
+        , (sigmahost(3,1) + sigmahost(3,2) - sigmahost(2,1)) ]
+    real(fp_kind),parameter :: landathost = 3. / ((1. / landahost(1)) &
+        + (1. / landahost(2)) + (1. / landahost(3)))
+    real(fp_kind),parameter :: whost = 4.
+    real(fp_kind),parameter :: pihost = acos(-1.)
+    real(fp_kind),parameter :: gx(0:8)= [0., 2., 0.,-2., 0., 1.,-1.,-1., 1.]
+    real(fp_kind),parameter :: gy(0:8)= [0., 0., -2., 0., 2., -1.,-1., 1., 1.]
+	
+	
+	
+	integer, dimension(0:nx+1,0:ny+1) :: is_solid_nodehost
+	real(fp_kind), dimension(3,nx,ny) :: dphidxhost, dphidyhost, nihost, njhost
+	real(fp_kind), dimension(2,0:8) :: efhhost, hlphhost
+	real(fp_kind), dimension(0:8) :: gammahost, geqhost
+	real(fp_kind), dimension(3) :: tmphost, ri
+	
+	real(fp_kind), dimension(0:nx+1,0:ny+1) :: h10_host, h11_host, h12_host, h13_host, h14_host, h15_host, h16_host, h17_host, h18_host
+	real(fp_kind), dimension(0:nx+1,0:ny+1) :: h20_host, h21_host, h22_host, h23_host, h24_host, h25_host, h26_host, h27_host, h28_host
+	real(fp_kind), dimension(0:nx+1,0:ny+1) ::  g0_host, g1_host, g2_host, g3_host, g4_host, g5_host, g6_host, g7_host, g8_host
+	real(fp_kind), dimension(0:nx+1,0:ny+1) :: phi1_host, phi2_host, phi3_host
+	real(fp_kind), dimension(nx,ny) :: phost, rhohost, uxhost, uyhost
+	
+	
+
+	! integer, allocatable, dimension(:,:) :: is_solid_nodehost, solidplt, anglehost, angle2host
+	! real(fp_kind), allocatable, dimension(:,:,:) :: dphidxhost, dphidyhost, nihost, njhost
+	! real(fp_kind), allocatable, dimension(:,:) :: sox, soy, abssohost, sox2, soy2, heqhost, efhhost, hlphhost
+	! real(fp_kind), allocatable, dimension(:) :: gammahost, geqhost, tmphost, ri
+	
+	! real(fp_kind), pinned, allocatable, dimension(:,:) :: h10_host, h11_host, h12_host, h13_host, h14_host, h15_host, h16_host, h17_host, h18_host
+	! real(fp_kind), pinned, allocatable, dimension(:,:) :: h20_host, h21_host, h22_host, h23_host, h24_host, h25_host, h26_host, h27_host, h28_host
+	! real(fp_kind), pinned, allocatable, dimension(:,:) ::  g0_host, g1_host, g2_host, g3_host, g4_host, g5_host, g6_host, g7_host, g8_host
+	! real(fp_kind), allocatable, dimension(:,:) :: phi1_host, phi2_host, phi3_host
+	! real(fp_kind), allocatable, dimension(:,:) :: phost, rhohost, uxhost, uyhost
+	
+end module host_var

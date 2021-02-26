@@ -1,0 +1,622 @@
+module host_subroutines
+
+contains
+!!!*************************************************************************************************************!!!
+	subroutine host_allocation
+	
+		use host_var
+		implicit none
+		
+		! allocate(h10_host(0:nx+1,0:ny+1))
+		! allocate(h11_host(0:nx+1,0:ny+1))
+		! allocate(h12_host(0:nx+1,0:ny+1))
+		! allocate(h13_host(0:nx+1,0:ny+1))
+		! allocate(h14_host(0:nx+1,0:ny+1))
+		! allocate(h15_host(0:nx+1,0:ny+1))
+		! allocate(h16_host(0:nx+1,0:ny+1))
+		! allocate(h17_host(0:nx+1,0:ny+1))
+		! allocate(h18_host(0:nx+1,0:ny+1))
+		
+		! allocate(h20_host(0:nx+1,0:ny+1))
+		! allocate(h21_host(0:nx+1,0:ny+1))
+		! allocate(h22_host(0:nx+1,0:ny+1))
+		! allocate(h23_host(0:nx+1,0:ny+1))
+		! allocate(h24_host(0:nx+1,0:ny+1))
+		! allocate(h25_host(0:nx+1,0:ny+1))
+		! allocate(h26_host(0:nx+1,0:ny+1))
+		! allocate(h27_host(0:nx+1,0:ny+1))
+		! allocate(h28_host(0:nx+1,0:ny+1))
+		
+		! allocate(phi1_host(0:nx+1,0:ny+1))
+		! allocate(phi2_host(0:nx+1,0:ny+1))
+		! allocate(phi3_host(0:nx+1,0:ny+1))
+		
+		! allocate(g0_host(0:nx+1,0:ny+1))
+		! allocate(g1_host(0:nx+1,0:ny+1))
+		! allocate(g2_host(0:nx+1,0:ny+1))
+		! allocate(g3_host(0:nx+1,0:ny+1))
+		! allocate(g4_host(0:nx+1,0:ny+1))
+		! allocate(g5_host(0:nx+1,0:ny+1))
+		! allocate(g6_host(0:nx+1,0:ny+1))
+		! allocate(g7_host(0:nx+1,0:ny+1))
+		! allocate(g8_host(0:nx+1,0:ny+1))
+		
+		! allocate(dphidxhost(3,nx,ny))
+		! allocate(dphidyhost(3,nx,ny))
+		! allocate(nihost(3,nx,ny))
+		! allocate(njhost(3,nx,ny))
+		! allocate(phost(nx,ny))
+		! allocate(rhohost(nx,ny))
+		! allocate(uxhost(nx,ny))
+		! allocate(uyhost(nx,ny))
+		! allocate(sox(nx,ny))
+		! allocate(soy(nx,ny))
+		! allocate(sox2(nx,ny))
+		! allocate(soy2(nx,ny))
+		! allocate(abssohost(nx,ny))
+		! allocate(heqhost(2,0:8))
+		! allocate(efhhost(2,0:8))
+		! allocate(hlphhost(2,0:8))
+		! allocate(gammahost(0:8))
+		! allocate(geqhost(0:8))
+		! allocate(tmphost(3))
+		! allocate(ri(2))
+		! allocate(is_solid_nodehost(0:nx+1,0:ny+1))
+		! allocate(solidplt(nx,ny))
+		! allocate(anglehost(nx,ny))
+		! allocate(angle2host(nx,ny))
+	
+	
+	end
+!!!*************************************************************************************************************!!!
+	subroutine device_allocation
+
+		use device_var
+		implicit none
+		
+		! allocate(h10(0:nxd+1,0:nyd+1))
+		! allocate(h11(0:nxd+1,0:nyd+1))
+		! allocate(h12(0:nxd+1,0:nyd+1))
+		! allocate(h13(0:nxd+1,0:nyd+1))
+		! allocate(h14(0:nxd+1,0:nyd+1))
+		! allocate(h15(0:nxd+1,0:nyd+1))
+		! allocate(h16(0:nxd+1,0:nyd+1))
+		! allocate(h17(0:nxd+1,0:nyd+1))
+		! allocate(h18(0:nxd+1,0:nyd+1))
+		
+		! allocate(h20(0:nxd+1,0:nyd+1))
+		! allocate(h21(0:nxd+1,0:nyd+1))
+		! allocate(h22(0:nxd+1,0:nyd+1))
+		! allocate(h23(0:nxd+1,0:nyd+1))
+		! allocate(h24(0:nxd+1,0:nyd+1))
+		! allocate(h25(0:nxd+1,0:nyd+1))
+		! allocate(h26(0:nxd+1,0:nyd+1))
+		! allocate(h27(0:nxd+1,0:nyd+1))
+		! allocate(h28(0:nxd+1,0:nyd+1))
+		
+		! allocate(htemp11(nxd,nyd))
+		! allocate(htemp12(nxd,nyd))
+		! allocate(htemp13(nxd,nyd))
+		! allocate(htemp14(nxd,nyd))
+		! allocate(htemp15(nxd,nyd))
+		! allocate(htemp16(nxd,nyd))
+		! allocate(htemp17(nxd,nyd))
+		! allocate(htemp18(nxd,nyd))
+		
+		! allocate(htemp21(nxd,nyd))
+		! allocate(htemp22(nxd,nyd))
+		! allocate(htemp23(nxd,nyd))
+		! allocate(htemp24(nxd,nyd))
+		! allocate(htemp25(nxd,nyd))
+		! allocate(htemp26(nxd,nyd))
+		! allocate(htemp27(nxd,nyd))
+		! allocate(htemp28(nxd,nyd))
+		
+		! allocate(heq10(nxd, nyd))
+		! allocate(heq11(nxd, nyd))
+		! allocate(heq12(nxd, nyd))
+		! allocate(heq13(nxd, nyd))
+		! allocate(heq14(nxd, nyd))
+		! allocate(heq15(nxd, nyd))
+		! allocate(heq16(nxd, nyd))
+		! allocate(heq17(nxd, nyd))
+		! allocate(heq18(nxd, nyd))
+		
+		! allocate(heq20(nxd, nyd))
+		! allocate(heq21(nxd, nyd))
+		! allocate(heq22(nxd, nyd))
+		! allocate(heq23(nxd, nyd))
+		! allocate(heq24(nxd, nyd))
+		! allocate(heq25(nxd, nyd))
+		! allocate(heq26(nxd, nyd))
+		! allocate(heq27(nxd, nyd))
+		! allocate(heq28(nxd, nyd))
+		
+		! allocate(hlph10(nxd,nyd))
+		! allocate(hlph11(nxd,nyd))
+		! allocate(hlph12(nxd,nyd))
+		! allocate(hlph13(nxd,nyd))
+		! allocate(hlph14(nxd,nyd))
+		! allocate(hlph15(nxd,nyd))
+		! allocate(hlph16(nxd,nyd))
+		! allocate(hlph17(nxd,nyd))
+		! allocate(hlph18(nxd,nyd))
+		
+		! allocate(hlph20(nxd,nyd))
+		! allocate(hlph21(nxd,nyd))
+		! allocate(hlph22(nxd,nyd))
+		! allocate(hlph23(nxd,nyd))
+		! allocate(hlph24(nxd,nyd))
+		! allocate(hlph25(nxd,nyd))
+		! allocate(hlph26(nxd,nyd))
+		! allocate(hlph27(nxd,nyd))
+		! allocate(hlph28(nxd,nyd))
+		
+		! allocate(efh10(nxd,nyd))
+		! allocate(efh11(nxd,nyd))
+		! allocate(efh12(nxd,nyd))
+		! allocate(efh13(nxd,nyd))
+		! allocate(efh14(nxd,nyd))
+		! allocate(efh15(nxd,nyd))
+		! allocate(efh16(nxd,nyd))
+		! allocate(efh17(nxd,nyd))
+		! allocate(efh18(nxd,nyd))
+		
+		! allocate(efh20(nxd,nyd))
+		! allocate(efh21(nxd,nyd))
+		! allocate(efh22(nxd,nyd))
+		! allocate(efh23(nxd,nyd))
+		! allocate(efh24(nxd,nyd))
+		! allocate(efh25(nxd,nyd))
+		! allocate(efh26(nxd,nyd))
+		! allocate(efh27(nxd,nyd))
+		! allocate(efh28(nxd,nyd))
+		
+		! allocate(gamma0(nxd,nyd))
+		! allocate(gamma1(nxd,nyd))
+		! allocate(gamma2(nxd,nyd))
+		! allocate(gamma3(nxd,nyd))
+		! allocate(gamma4(nxd,nyd))
+		! allocate(gamma5(nxd,nyd))
+		! allocate(gamma6(nxd,nyd))
+		! allocate(gamma7(nxd,nyd))
+		! allocate(gamma8(nxd,nyd))
+		
+		! allocate(eu0(nxd,nyd))
+		! allocate(eu1(nxd,nyd))
+		! allocate(eu2(nxd,nyd))
+		! allocate(eu3(nxd,nyd))
+		! allocate(eu4(nxd,nyd))
+		! allocate(eu5(nxd,nyd))
+		! allocate(eu6(nxd,nyd))
+		! allocate(eu7(nxd,nyd))
+		! allocate(eu8(nxd,nyd))
+		
+		! allocate(ga_wa0(nxd,nyd))
+		! allocate(ga_wa1(nxd,nyd))
+		! allocate(ga_wa2(nxd,nyd))
+		! allocate(ga_wa3(nxd,nyd))
+		! allocate(ga_wa4(nxd,nyd))
+		! allocate(ga_wa5(nxd,nyd))
+		! allocate(ga_wa6(nxd,nyd))
+		! allocate(ga_wa7(nxd,nyd))
+		! allocate(ga_wa8(nxd,nyd))
+		
+		! allocate(phi1(0:nxd+1,0:nyd+1))
+		! allocate(phi2(0:nxd+1,0:nyd+1))
+		! allocate(phi3(0:nxd+1,0:nyd+1))
+		
+		! allocate(dphi1dx(nxd,nyd))
+		! allocate(dphi2dx(nxd,nyd))
+		! allocate(dphi3dx(nxd,nyd))
+		
+		! allocate(dphi1dy(nxd,nyd))
+		! allocate(dphi2dy(nxd,nyd))
+		! allocate(dphi3dy(nxd,nyd))
+		
+		! allocate(ni1(nxd,nyd))
+		! allocate(ni2(nxd,nyd))
+		! allocate(ni3(nxd,nyd))
+		
+		! allocate(nj1(nxd,nyd))
+		! allocate(nj2(nxd,nyd))
+		! allocate(nj3(nxd,nyd))
+		
+		! allocate(mu1(nxd,nyd))
+		! allocate(mu2(nxd,nyd))
+		! allocate(mu3(nxd,nyd))
+		
+		! allocate(d2phi1(nxd, nyd))
+		! allocate(d2phi2(nxd, nyd))
+		! allocate(d2phi3(nxd, nyd))
+		
+		! allocate(tmp1(nxd, nyd))
+		! allocate(tmp2(nxd, nyd))
+		! allocate(tmp3(nxd, nyd))
+		
+		! allocate(ef0(nxd,nyd))
+		! allocate(ef1(nxd,nyd))
+		! allocate(ef2(nxd,nyd))
+		! allocate(ef3(nxd,nyd))
+		! allocate(ef4(nxd,nyd))
+		! allocate(ef5(nxd,nyd))
+		! allocate(ef6(nxd,nyd))
+		! allocate(ef7(nxd,nyd))
+		! allocate(ef8(nxd,nyd))
+
+		! allocate(gtemp1(nxd,nyd))
+		! allocate(gtemp2(nxd,nyd))
+		! allocate(gtemp3(nxd,nyd))
+		! allocate(gtemp4(nxd,nyd))
+		! allocate(gtemp5(nxd,nyd))
+		! allocate(gtemp6(nxd,nyd))
+		! allocate(gtemp7(nxd,nyd))
+		! allocate(gtemp8(nxd,nyd))
+		
+		! allocate(g0(0:nxd+1,0:nyd+1))
+		! allocate(g1(0:nxd+1,0:nyd+1))
+		! allocate(g2(0:nxd+1,0:nyd+1))
+		! allocate(g3(0:nxd+1,0:nyd+1))
+		! allocate(g4(0:nxd+1,0:nyd+1))
+		! allocate(g5(0:nxd+1,0:nyd+1))
+		! allocate(g6(0:nxd+1,0:nyd+1))
+		! allocate(g7(0:nxd+1,0:nyd+1))
+		! allocate(g8(0:nxd+1,0:nyd+1))
+		
+		! allocate(geq0(nxd,nyd))
+		! allocate(geq1(nxd,nyd))
+		! allocate(geq2(nxd,nyd))
+		! allocate(geq3(nxd,nyd))
+		! allocate(geq4(nxd,nyd))
+		! allocate(geq5(nxd,nyd))
+		! allocate(geq6(nxd,nyd))
+		! allocate(geq7(nxd,nyd))
+		! allocate(geq8(nxd,nyd))
+		
+		! allocate(hlpg0(nxd,nyd))
+		! allocate(hlpg1(nxd,nyd))
+		! allocate(hlpg2(nxd,nyd))
+		! allocate(hlpg3(nxd,nyd))
+		! allocate(hlpg4(nxd,nyd))
+		! allocate(hlpg5(nxd,nyd))
+		! allocate(hlpg6(nxd,nyd))
+		! allocate(hlpg7(nxd,nyd))
+		! allocate(hlpg8(nxd,nyd))
+		
+		
+		! allocate(p(nxd,nyd))
+		! allocate(rho(nxd,nyd))
+		! allocate(ux(nxd,nyd))
+		! allocate(uy(nxd,nyd))
+		! allocate(u2(nxd,nyd))
+		! allocate(tauu(nxd,nyd))
+		! allocate(heav1(nxd,nyd))
+		! allocate(heav2(nxd,nyd))
+		! allocate(fpx(nxd,nyd))
+		! allocate(fpy(nxd,nyd))
+		! allocate(fsx(nxd,nyd))
+		! allocate(fsy(nxd,nyd))
+		! allocate(fmx(nxd,nyd))
+		! allocate(fmy(nxd,nyd))
+		! allocate(fx(nxd,nyd))
+		! allocate(fy(nxd,nyd))
+		! allocate(sxx(nxd,nyd))
+		! allocate(sxy(nxd,nyd))
+		! allocate(syy(nxd,nyd))
+		! allocate(is_solid_node(0:nxd+1,0:nyd+1))
+		
+		
+	end
+!!!*************************************************************************************************************!!!
+	subroutine periodic_phi_host( a )
+		use precision_m
+		use host_var, only: nx, ny
+		implicit none
+		real(fp_kind),intent(inout) :: a(0:nx+1,0:ny+1)
+		
+			a(:,0) = a(:,ny)   
+			a(:,ny+1) = a(:, 1)   
+
+			
+			a(0 ,:) = a(nx,:)   
+			a(nx+1,:) = a(1,:)   
+	end
+!!!*************************************************************************************************************!!!
+	subroutine phi_gradient_host
+    use precision_m
+    use host_var, only: x, y, nx, ny, phi1_host, phi2_host, phi3_host, dphidxhost, dphidyhost
+    implicit none
+    
+
+    do y = 1, ny
+        do x = 1, nx
+            dphidxhost(1,x,y) = (phi1_host(x+1,y) - phi1_host(x-1,y))/3. + ( phi1_host(x+1,y-1) + phi1_host(x+1,y+1) - phi1_host(x-1,y-1) - phi1_host(x-1,y+1))/12.
+            dphidyhost(1,x,y) = (phi1_host(x,y+1) - phi1_host(x,y-1))/3. + ( phi1_host(x-1,y+1) + phi1_host(x+1,y+1) - phi1_host(x-1,y-1) - phi1_host(x+1,y-1))/12.
+			
+			dphidxhost(2,x,y) = (phi2_host(x+1,y) - phi2_host(x-1,y))/3. + ( phi2_host(x+1,y-1) + phi2_host(x+1,y+1) - phi2_host(x-1,y-1) - phi2_host(x-1,y+1))/12.
+            dphidyhost(2,x,y) = (phi2_host(x,y+1) - phi2_host(x,y-1))/3. + ( phi2_host(x-1,y+1) + phi2_host(x+1,y+1) - phi2_host(x-1,y-1) - phi2_host(x+1,y-1))/12.
+			
+			dphidxhost(3,x,y) = (phi3_host(x+1,y) - phi3_host(x-1,y))/3. + ( phi3_host(x+1,y-1) + phi3_host(x+1,y+1) - phi3_host(x-1,y-1) - phi3_host(x-1,y+1))/12.
+            dphidyhost(3,x,y) = (phi3_host(x,y+1) - phi3_host(x,y-1))/3. + ( phi3_host(x-1,y+1) + phi3_host(x+1,y+1) - phi3_host(x-1,y-1) - phi3_host(x+1,y-1))/12.
+        end do
+    end do
+	end
+!!!*************************************************************************************************************!!!
+	subroutine interface_cal_host
+    use precision_m
+    use host_var
+    implicit none
+    integer :: o
+    do y = 1, ny
+        do x = 1, nx
+            do o = 1, 3
+                tmphost(o) = sqrt( dphidxhost(o,x,y)**2. + dphidyhost(o,x,y)**2. )
+                if(tmphost(o)>0) then
+                    nihost(o,x,y) = dphidxhost(o,x,y) / tmphost(o)
+                    njhost(o,x,y) = dphidyhost(o,x,y) / tmphost(o)
+                else
+                    tmphost(o) = sqrt( dphidxhost(o,x,y)**2 + dphidyhost(o,x,y)**2 + 1e-32 )
+                    nihost(o,x,y) = dphidxhost(o,x,y) / tmphost(o)
+                    njhost(o,x,y) = dphidyhost(o,x,y) / tmphost(o)
+                end if
+            end do
+        end do
+    end do
+	end
+!!!*************************************************************************************************************!!!
+	subroutine equilibrium_host( u, v, ga_wa )
+    use precision_m
+    use host_var, only: exhost, eyhost, wahost
+    implicit none
+    real(fp_kind), intent(in) :: u, v
+    real(fp_kind), intent(out) :: ga_wa(0:8)
+    real(fp_kind) :: u2, eu(0:8)
+    u2 = u*u + v*v
+    eu(:) = exhost(:) * u  + eyhost(:) * v
+    ga_wa(:) = wahost(:) * ( eu(:)*(3. + 4.5*eu(:)) - 1.5*u2 )
+
+	end
+!!!*************************************************************************************************************!!!
+	subroutine initialize_populations_host
+    use precision_m
+    use host_var
+    implicit none
+    integer :: i
+    real(fp_kind) :: ga_wa(0:8)
+    
+    do y = 0, ny+1  
+        do x = 0, nx+1 
+            if(is_solid_nodehost(x,y)==0) then
+				ri(1) = sqrt( (x-((nx/2.-r)))**2. + (y-(ny/2.))**2. )
+				ri(2) = sqrt( (x-(nx/2.+r))**2.+ (y-(ny/2.))**2. )
+
+				phi1_host(x,y) = 0.5 + 0.5 * tanh(2.*(r-ri(1))/whost) 
+
+				phi2_host(x,y) = 0.5 + 0.5 * tanh(2.*(r-ri(2))/whost)  
+
+				phi3_host(x,y) = 1. - phi1_host(x,y) - phi2_host(x,y)
+								
+            end if
+            rhohost(x,y) = phi1_host(x,y) * density_host(1) + phi2_host(x,y) * density_host(2) + phi3_host(x,y) * density_host(3)
+        end do
+    end do
+    call periodic_phi_host( phi1_host )
+	call periodic_phi_host( phi2_host )
+	call periodic_phi_host( phi3_host )
+    call phi_gradient_host
+    call interface_cal_host
+    phost=0.0
+    uxhost=0.0
+    uyhost=0.0
+	! h10_host = 0
+	! h11_host = 0
+	! h12_host = 0
+	! h13_host = 0
+	! h14_host = 0
+	! h15_host = 0
+	! h16_host = 0
+	! h17_host = 0
+	! h18_host = 0
+
+
+	! h20_host = 0
+	! h21_host = 0
+	! h22_host = 0
+	! h23_host = 0
+	! h24_host = 0
+	! h25_host = 0
+	! h26_host = 0
+	! h27_host = 0
+	! h28_host = 0
+
+	! g0_host = 0
+	! g1_host = 0
+	! g2_host = 0
+	! g3_host = 0
+	! g4_host = 0
+	! g5_host = 0
+	! g6_host = 0
+	! g7_host = 0
+	! g8_host = 0
+    do y = 1, ny
+        do x = 1, nx
+            call equilibrium_host( uxhost(x,y), uyhost(x,y), ga_wa )
+            gammahost(:) = ga_wa(:) + wahost(:)
+            !*******************    heq
+            efhhost(1,:)  = 2. * ((4./whost) * abs(phi1_host(x,y) * (1. - phi1_host(x,y))) * (exhost(:) * nihost(1,x,y) + eyhost(:) * njhost(1,x,y))) &
+                - ((4./whost) * abs(phi2_host(x,y) * (1. - phi2_host(x,y))) * (exhost(:) * nihost(2,x,y) + eyhost(:) * njhost(2,x,y)) &
+                + (4./whost) * abs(phi3_host(x,y) * (1. - phi3_host(x,y))) * (exhost(:) * nihost(3,x,y) + eyhost(:) * njhost(3,x,y)))
+            efhhost(2,:)  = 2. * ((4./whost) * abs(phi2_host(x,y) * (1. - phi2_host(x,y))) * (exhost(:) * nihost(2,x,y) + eyhost(:) * njhost(2,x,y))) &
+                - ((4./whost) * abs(phi1_host(x,y) * (1. - phi1_host(x,y))) * (exhost(:) * nihost(1,x,y) + eyhost(:) * njhost(1,x,y)) &
+                + (4./whost) * abs(phi3_host(x,y) * (1. - phi3_host(x,y))) * (exhost(:) * nihost(3,x,y) + eyhost(:) * njhost(3,x,y)))
+            do i=1,2
+                hlphhost(i,:) = wahost(:) * efhhost(i,:) / 3.
+			end do
+			
+			
+			
+			h10_host(x,y) = phi1_host(x,y) * gammahost(0) - 0.5 * hlphhost(1,0)
+			h11_host(x,y) = phi1_host(x,y) * gammahost(1) - 0.5 * hlphhost(1,1)
+			h12_host(x,y) = phi1_host(x,y) * gammahost(2) - 0.5 * hlphhost(1,2)
+			h13_host(x,y) = phi1_host(x,y) * gammahost(3) - 0.5 * hlphhost(1,3)
+			h14_host(x,y) = phi1_host(x,y) * gammahost(4) - 0.5 * hlphhost(1,4)
+			h15_host(x,y) = phi1_host(x,y) * gammahost(5) - 0.5 * hlphhost(1,5)
+			h16_host(x,y) = phi1_host(x,y) * gammahost(6) - 0.5 * hlphhost(1,6)
+			h17_host(x,y) = phi1_host(x,y) * gammahost(7) - 0.5 * hlphhost(1,7)
+			h18_host(x,y) = phi1_host(x,y) * gammahost(8) - 0.5 * hlphhost(1,8)
+			
+			
+			h20_host(x,y) = phi2_host(x,y) * gammahost(0) - 0.5 * hlphhost(2,0)
+			h21_host(x,y) = phi2_host(x,y) * gammahost(1) - 0.5 * hlphhost(2,1)
+			h22_host(x,y) = phi2_host(x,y) * gammahost(2) - 0.5 * hlphhost(2,2)
+			h23_host(x,y) = phi2_host(x,y) * gammahost(3) - 0.5 * hlphhost(2,3)
+			h24_host(x,y) = phi2_host(x,y) * gammahost(4) - 0.5 * hlphhost(2,4)
+			h25_host(x,y) = phi2_host(x,y) * gammahost(5) - 0.5 * hlphhost(2,5)
+			h26_host(x,y) = phi2_host(x,y) * gammahost(6) - 0.5 * hlphhost(2,6)
+			h27_host(x,y) = phi2_host(x,y) * gammahost(7) - 0.5 * hlphhost(2,7)
+			h28_host(x,y) = phi2_host(x,y) * gammahost(8) - 0.5 * hlphhost(2,8)
+            
+            !*******************    geq
+            g0_host(x,y) = phost(x,y) * wahost(0) + ga_wa(0)
+			g1_host(x,y) = phost(x,y) * wahost(1) + ga_wa(1)
+			g2_host(x,y) = phost(x,y) * wahost(2) + ga_wa(2)
+			g3_host(x,y) = phost(x,y) * wahost(3) + ga_wa(3)
+			g4_host(x,y) = phost(x,y) * wahost(4) + ga_wa(4)
+			g5_host(x,y) = phost(x,y) * wahost(5) + ga_wa(5)
+			g6_host(x,y) = phost(x,y) * wahost(6) + ga_wa(6)
+			g7_host(x,y) = phost(x,y) * wahost(7) + ga_wa(7)
+			g8_host(x,y) = phost(x,y) * wahost(8) + ga_wa(8)
+        end do
+    end do
+		
+
+	end
+!!!*************************************************************************************************************!!!
+	subroutine set_host
+    use precision_m
+    use host_var
+    implicit none
+    !real(fp_kind) :: ri2
+    is_solid_nodehost=0
+	end
+!!!*************************************************************************************************************!!!
+	subroutine results_output_host
+	
+    use host_var
+    implicit none
+
+    character(len=18)::filename,form
+    integer :: ierror_result
+
+    select case (int(t/step))
+        case(0:9)
+            write(form,'(a9,i1)') 'xml_000000',int(t/step)
+        case(10:99)
+            write(form,'(a8,i2)') 'xml_00000',int(t/step)
+        case(100:999)
+            write(form,'(a7,i3)') 'xml_0000',int(t/step)
+        case(1000:9999)
+            write(form,'(a6,i4)') 'xml_000',int(t/step)
+        case(10000:99999)
+            write(form,'(a5,i5)') 'xml_00',int(t/step)
+        case(100000:999999)
+            write(form,'(a4,i6)') 'xml_0',int(t/step)
+        case default
+            write(form,'(a9,i1)') 'xml_000000',int(-1)
+    endselect
+
+    write(filename,'(a10,a4)')trim(form),".vtr"
+    !filename="out/"//trim(form)//".vtr"
+    open(unit=1,file=filename,status='unknown',iostat=ierror_result)
+
+		    write (1,'(A21)') '<?xml version="1.0"?>'
+    write (1,'(A)') '<VTKFile type="RectilinearGrid" version="0.1" byte_order="LittleEndian">'
+    write (1,*) '<RectilinearGrid WholeExtent="1 ',Nx,' 1 ',Ny,' 1 ','1','">'
+    write (1,*) '<Piece Extent="1 ',Nx,' 1 ',Ny,' 1 ','1',' ">'
+    write (1,*) '<Coordinates>'
+    write (1,'(A)') '<DataArray type="Float32" Name="X" NumberOfComponents="1" format="ascii">'
+
+    do x= 1,nx
+        write (1,*) x
+    end do
+
+    write (1,'(A)') '</DataArray>'
+    write (1,'(A)') '<DataArray type="Float32" Name="Y" NumberOfComponents="1" format="ascii">'
+    do y= 1,ny
+
+        write (1,*) y
+
+    end do
+    write (1,'(A)') '</DataArray>'
+
+    write (1,'(A)') '<DataArray type="Float32" Name="Z" NumberOfComponents="1" format="ascii">'
+    ! DO Z= 1,lz
+
+    write (1,*) 1
+
+    !END DO
+    write (1,'(A)') '</DataArray>'
+
+    write (1,*) '</Coordinates>'
+
+    write (1,'(A)') '<PointData>'
+    write (1,'(A)') '<DataArray type="Float32" Name="Density" NumberOfComponents="1" format="ascii">'
+    !Do Z= 1, lz
+    do y= 1, ny
+        do x= 1, nx
+            write (1,*) rhohost(x,y)
+        end do
+    end do
+    !END DO
+    write (1,'(A)') '</DataArray>'
+
+    write (1,'(A)') '<DataArray type="Float32" Name="phi1" NumberOfComponents="1" format="ascii">'
+    !!Do Z= 1, lz
+    do y= 1, ny
+        do x= 1, nx
+            write (1,*) phi1_host(x,y)
+        end do
+    end do
+    !END DO
+    write (1,'(A)') '</DataArray>'
+
+    write (1,'(A)') '<DataArray type="Float32" Name="phi2" NumberOfComponents="1" format="ascii">'
+    !!Do Z= 1, lz
+    do y= 1, ny
+        do x= 1, nx
+            write (1,*) phi2_host(x,y)
+        end do
+    end do
+    !END DO
+    write (1,'(A)') '</DataArray>'
+
+    WRITE (1,'(A)') '<DataArray type="Float32" Name="Velocity" NumberOfComponents="3" format="ascii">'
+    !Do Z= 1, 1
+    do y= 1, ny
+        do x= 1, nx
+            write (1,*) uxhost(x,y), uyhost(x,y),0
+        end do
+    end do
+    !END DO
+    write (1,'(A)') '</DataArray>'
+    write (1,'(A)') '<DataArray type="Float32" Name="Pressure" NumberOfComponents="1" format="ascii">'
+    !Do Z= 1, lz
+    do y= 1, ny
+        do x= 1, nx
+            write (1,*) phost(x,y)*rhohost(x,y)/3.
+        end do
+    end do
+    !END DO
+    write (1,'(A)') '</DataArray>'
+
+    write (1,'(A)') '</PointData>'
+
+    write (1,'(A)') '</Piece>'
+    write (1,'(A)') '</RectilinearGrid>'
+    write (1,'(A)') '</VTKFile>'
+
+	end
+!!!*************************************************************************************************************!!!
+
+	
+end
