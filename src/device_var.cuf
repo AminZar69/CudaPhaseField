@@ -1,12 +1,34 @@
+!============================== License GPLv3 ===================================
+!    CudaPhaseField is three-component flow solver based on th lattice Boltzmann method which runs on the NVIDIA GPU.
+!    Copyright (C) 2021 Amin Zar, aminpopjoury@gmail.com
+
+
+!    This program is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation, either version 3 of the License, or
+!    (at your option) any later version.
+
+!    This program is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+
+!    You should have received a copy of the GNU General Public License
+!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!================================================================================
+
 module device_var
     use precision_m
     implicit none
-	integer, constant, parameter :: nxd = 256
-	integer, constant, parameter ::	nyd = 256
+	integer, constant, parameter :: nxd = 1022
+	integer, constant, parameter ::	nyd = 1022
+	real(fp_kind), constant, parameter :: density(3) = [1000., 500., 1.]
     integer, constant, parameter :: ex(0:8) = [0, 1, 0,-1, 0, 1,-1,-1, 1]
     integer, constant, parameter :: ey(0:8) = [0, 0, 1, 0,-1, 1, 1,-1,-1]
     real(fp_kind), constant, parameter :: wa(0:8) = [16,4, 4, 4, 4, 1, 1, 1, 1] / 36.
-    real(fp_kind), constant, parameter :: density(3) = [1000., 500., 1.]
+    real(fp_kind), constant,parameter :: w = 4.
+	real(fp_kind),constant, parameter :: m = 0.01
+	real(fp_kind),constant, parameter :: w_c = 1./(0.5 + 3.*m)
     real(fp_kind),parameter :: tau1  = 0.9
     real(fp_kind),parameter :: tau2  = 0.8
     real(fp_kind),parameter :: tau3  = 0.95
@@ -18,15 +40,9 @@ module device_var
         , (sigma(3,1) + sigma(3,2) - sigma(2,1)) ]
     real(fp_kind), constant, parameter :: landat = 3. / ((1. / landa(1)) &
         + (1. / landa(2)) + (1. / landa(3)))
-    real(fp_kind), constant,parameter :: w = 4.
     real(fp_kind),parameter :: pi = acos(-1.)
-    real(fp_kind),constant, parameter :: m = 0.01
-    real(fp_kind),constant, parameter :: w_c = 1./(0.5 + 3.*m)
-    real(fp_kind),parameter :: tetad13 = 50.
-    real(fp_kind),parameter :: tetad23 = 90.
-    real(fp_kind),parameter :: teta13 = tetad13 * pi / 180.
-    real(fp_kind),parameter :: teta23 = tetad23 * pi / 180.
-    real(fp_kind),parameter :: teta12 = acos((sigma(3,1) * cos(teta13) - sigma(3,2) * cos(teta23))/sigma(2,1))
+    
+   
 	
 
 	

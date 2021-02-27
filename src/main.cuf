@@ -1,3 +1,22 @@
+!============================== License GPLv3 ===================================
+!    CudaPhaseField is three-component flow solver based on th lattice Boltzmann method which runs on the NVIDIA GPU.
+!    Copyright (C) 2021 Amin Zar, aminpopjoury@gmail.com
+
+
+!    This program is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation, either version 3 of the License, or
+!    (at your option) any later version.
+
+!    This program is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+
+!    You should have received a copy of the GNU General Public License
+!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!================================================================================
+
 program main
 	use cudafor
 	use precision_m
@@ -19,17 +38,17 @@ program main
 	!call device_allocation
 	call set_host
 	call initialize_populations_host
-	print*, 'teta12 = ', teta12 * 180./pi
+	
 	!=========================================================================================
-	print '(/a7,5a12,a12/)', 't', 'phi3_min', 'phi3_max', 'ux_max', 'uy_max', '|u_max|', 'mass_phi'
+	print '(/a7,6a12/)', 't', 'phi3_min', 'phi3_max', 'ux_max', 'uy_max', '|u_max|', 'total_mass'
 	!=========================================================================================
 	is_solid_node = is_solid_nodehost
 
 	tblock = dim3(32, 32, 1) ! for static declaration
 	!tblock = dim3(16, 16, 1) ! for dynamic declaration
 	
-	grid = dim3(ceiling(real (nx-5)/tblock%x ), &
-	ceiling(real(ny-5)/tblock%y), 1)
+	grid = dim3(ceiling(real (nx+2)/tblock%x ), &
+	ceiling(real(ny+2)/tblock%y), 1)
 	
 
 	
@@ -46,126 +65,126 @@ program main
 	do t = 0, tf
 			
 				
-				h10 = h10_host
-				h11 = h11_host
-				h12 = h12_host
-				h13 = h13_host
-				h14 = h14_host
-				h15 = h15_host
-				h16 = h16_host
-				h17 = h17_host
-				h18 = h18_host
-				
-				h20 = h20_host
-				h21 = h21_host
-				h22 = h22_host
-				h23 = h23_host
-				h24 = h24_host
-				h25 = h25_host
-				h26 = h26_host
-				h27 = h27_host
-				h28 = h28_host
-				
-				g0 = g0_host
-				g1 = g1_host
-				g2 = g2_host
-				g3 = g3_host
-				g4 = g4_host
-				g5 = g5_host
-				g6 = g6_host
-				g7 = g7_host
-				g8 = g8_host
-				
-				
-				
-				
-				call phi_cal<<<grid,tblock>>>
-				call periodic_phi<<<grid,tblock>>>
-				call gradient_cal<<<grid,tblock>>>
-				call interface_cal<<<grid,tblock>>>
-				call chemical_potential<<<grid,tblock>>>
-				call hydro_cal<<<grid,tblock>>>
-				call collision_h<<<grid,tblock>>>
-				call collision_g1<<<grid,tblock>>>
-				call collision_g2<<<grid,tblock>>>
-				call periodic_f<<<grid,tblock>>>
-				call propagation_h<<<grid,tblock>>>
-				call propagation_h2<<<grid,tblock>>>
-				call propagation_g<<<grid,tblock>>>
-				call propagation_g2<<<grid,tblock>>>
-				
-			
-				
-				
-
-				
-				
-				h10_host = h10
-				h11_host = h11
-				h12_host = h12
-				h13_host = h13
-				h14_host = h14
-				h15_host = h15
-				h16_host = h16
-				h17_host = h17
-				h18_host = h18
-				
-				h20_host = h20
-				h21_host = h21
-				h22_host = h22
-				h23_host = h23
-				h24_host = h24
-				h25_host = h25
-				h26_host = h26
-				h27_host = h27
-				h28_host = h28
-				
-				
-				g0_host = g0
-				g1_host = g1
-				g2_host = g2
-				g3_host = g3
-				g4_host = g4
-				g5_host = g5
-				g6_host = g6
-				g7_host = g7
-				g8_host = g8
-				
-				
-				
-				
-				if( mod(t,1000)==0 )then	
-				
-					phi1_host = phi1
-					phi2_host = phi2
-					phi3_host = phi3
-					rhohost = rho
-					uxhost = ux
-					uyhost = uy
-					phost = p
-					
-					
-				
-					
-					print '(i7,2f12.6,3e12.3,f11.2)', &
-						t, minval(phi3_host), &
-						maxval(phi3_host), &
-						maxval(abs(uxhost)), &
-						maxval(abs(uyhost)), &
-						sqrt( maxval(uxhost**2+uyhost**2) ), &
-						(sum(phi1_host(1:nx, 1:ny)) + sum(phi2_host(1:nx, 1:ny))+ sum(phi3_host(1:nx, 1:ny)))
-				end if
-				
-				
-				
-				
-				
-				
-				
+		h10 = h10_host
+		h11 = h11_host
+		h12 = h12_host
+		h13 = h13_host
+		h14 = h14_host
+		h15 = h15_host
+		h16 = h16_host
+		h17 = h17_host
+		h18 = h18_host
 		
-				if( mod(t,step)==0 )then
-					call results_output_host
-				end if
+		h20 = h20_host
+		h21 = h21_host
+		h22 = h22_host
+		h23 = h23_host
+		h24 = h24_host
+		h25 = h25_host
+		h26 = h26_host
+		h27 = h27_host
+		h28 = h28_host
+		
+		g0 = g0_host
+		g1 = g1_host
+		g2 = g2_host
+		g3 = g3_host
+		g4 = g4_host
+		g5 = g5_host
+		g6 = g6_host
+		g7 = g7_host
+		g8 = g8_host
+		
+		
+		
+		
+		call phi_cal<<<grid,tblock>>>
+		call periodic_phi<<<grid,tblock>>>
+		call gradient_cal<<<grid,tblock>>>
+		call interface_cal<<<grid,tblock>>>
+		call chemical_potential<<<grid,tblock>>>
+		call hydro_cal<<<grid,tblock>>>
+		call collision_h<<<grid,tblock>>>
+		call collision_g1<<<grid,tblock>>>
+		call collision_g2<<<grid,tblock>>>
+		call periodic_f<<<grid,tblock>>>
+		call propagation_h<<<grid,tblock>>>
+		call propagation_h2<<<grid,tblock>>>
+		call propagation_g<<<grid,tblock>>>
+		call propagation_g2<<<grid,tblock>>>
+		
+	
+		
+		
+
+		
+		
+		h10_host = h10
+		h11_host = h11
+		h12_host = h12
+		h13_host = h13
+		h14_host = h14
+		h15_host = h15
+		h16_host = h16
+		h17_host = h17
+		h18_host = h18
+		
+		h20_host = h20
+		h21_host = h21
+		h22_host = h22
+		h23_host = h23
+		h24_host = h24
+		h25_host = h25
+		h26_host = h26
+		h27_host = h27
+		h28_host = h28
+		
+		
+		g0_host = g0
+		g1_host = g1
+		g2_host = g2
+		g3_host = g3
+		g4_host = g4
+		g5_host = g5
+		g6_host = g6
+		g7_host = g7
+		g8_host = g8
+		
+		
+		
+		
+		if( mod(t,1000)==0 )then	
+		
+			phi1_host = phi1
+			phi2_host = phi2
+			phi3_host = phi3
+			rhohost = rho
+			uxhost = ux
+			uyhost = uy
+			phost = p
+			
+			
+		
+			
+			print '(i7,2f12.6,3e12.3,f11.2)', &
+				t, minval(phi3_host), &
+				maxval(phi3_host), &
+				maxval(abs(uxhost)), &
+				maxval(abs(uyhost)), &
+				sqrt( maxval(uxhost**2+uyhost**2) ), &
+				(sum(phi1_host(1:nx, 1:ny)) + sum(phi2_host(1:nx, 1:ny))+ sum(phi3_host(1:nx, 1:ny)))
+		end if
+		
+		
+		
+		
+		
+		
+		
+
+		if( mod(t,step)==0 )then
+			call results_output_host
+		end if
   end do
   
 	

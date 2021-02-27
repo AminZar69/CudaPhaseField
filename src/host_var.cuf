@@ -1,17 +1,36 @@
+!============================== License GPLv3 ===================================
+!    CudaPhaseField is three-component flow solver based on th lattice Boltzmann method which runs on the NVIDIA GPU.
+!    Copyright (C) 2021 Amin Zar, aminpopjoury@gmail.com
+
+
+!    This program is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation, either version 3 of the License, or
+!    (at your option) any later version.
+
+!    This program is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+
+!    You should have received a copy of the GNU General Public License
+!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!================================================================================
+
 module host_var
     use precision_m
     implicit none
     integer :: t, x, y
     integer,parameter :: tf   = 160000
-    integer,parameter :: step = 4000
-    integer,parameter :: nx = 256
-    integer,parameter :: ny = 256
+    integer,parameter :: step = 8000
+    integer,parameter :: nx = 1022
+    integer,parameter :: ny = 1022
 	real(fp_kind),parameter :: density_host(3) = [1000., 500., 1.]
 	integer,parameter :: exhost(0:8) = [0, 1, 0,-1, 0, 1,-1,-1, 1]
     integer,parameter :: eyhost(0:8) = [0, 0, 1, 0,-1, 1, 1,-1,-1]
     real(fp_kind),parameter :: wahost(0:8) = [16,4, 4, 4, 4, 1, 1, 1, 1] / 36.
-    real(fp_kind),parameter :: r = 20.
-    real(fp_kind),parameter :: densityhost(3) = [1000., 500., 1.]
+	real(fp_kind),parameter :: whost = 4.
+    real(fp_kind),parameter :: r = 150.
     real(fp_kind),parameter :: sigmahost(3,3) = reshape((/0.1, 0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1/), (/3,3/))
     real(fp_kind),parameter :: landahost(3) = [(sigmahost(2,1) +  &
         sigmahost(3,1) &
@@ -20,10 +39,8 @@ module host_var
         , (sigmahost(3,1) + sigmahost(3,2) - sigmahost(2,1)) ]
     real(fp_kind),parameter :: landathost = 3. / ((1. / landahost(1)) &
         + (1. / landahost(2)) + (1. / landahost(3)))
-    real(fp_kind),parameter :: whost = 4.
     real(fp_kind),parameter :: pihost = acos(-1.)
-    real(fp_kind),parameter :: gx(0:8)= [0., 2., 0.,-2., 0., 1.,-1.,-1., 1.]
-    real(fp_kind),parameter :: gy(0:8)= [0., 0., -2., 0., 2., -1.,-1., 1., 1.]
+   
 	
 	
 	

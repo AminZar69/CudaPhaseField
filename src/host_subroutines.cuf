@@ -1,3 +1,22 @@
+!============================== License GPLv3 ===================================
+!    CudaPhaseField is three-component flow solver based on th lattice Boltzmann method which runs on the NVIDIA GPU.
+!    Copyright (C) 2021 Amin Zar, aminpopjoury@gmail.com
+
+
+!    This program is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation, either version 3 of the License, or
+!    (at your option) any later version.
+
+!    This program is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+
+!    You should have received a copy of the GNU General Public License
+!    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+!================================================================================
+
 module host_subroutines
 
 contains
@@ -314,12 +333,12 @@ contains
 		implicit none
 		real(fp_kind),intent(inout) :: a(0:nx+1,0:ny+1)
 		
-			a(:,0) = a(:,ny)   
-			a(:,ny+1) = a(:, 1)   
+		a(:,0) = a(:,ny)   
+		a(:,ny+1) = a(:, 1)   
 
-			
-			a(0 ,:) = a(nx,:)   
-			a(nx+1,:) = a(1,:)   
+		
+		a(0 ,:) = a(nx,:)   
+		a(nx+1,:) = a(1,:)   
 	end
 !!!*************************************************************************************************************!!!
 	subroutine phi_gradient_host
@@ -365,15 +384,15 @@ contains
 	end
 !!!*************************************************************************************************************!!!
 	subroutine equilibrium_host( u, v, ga_wa )
-    use precision_m
-    use host_var, only: exhost, eyhost, wahost
-    implicit none
-    real(fp_kind), intent(in) :: u, v
-    real(fp_kind), intent(out) :: ga_wa(0:8)
-    real(fp_kind) :: u2, eu(0:8)
-    u2 = u*u + v*v
-    eu(:) = exhost(:) * u  + eyhost(:) * v
-    ga_wa(:) = wahost(:) * ( eu(:)*(3. + 4.5*eu(:)) - 1.5*u2 )
+		use precision_m
+		use host_var, only: exhost, eyhost, wahost
+		implicit none
+		real(fp_kind), intent(in) :: u, v
+		real(fp_kind), intent(out) :: ga_wa(0:8)
+		real(fp_kind) :: u2, eu(0:8)
+		u2 = u*u + v*v
+		eu(:) = exhost(:) * u  + eyhost(:) * v
+		ga_wa(:) = wahost(:) * ( eu(:)*(3. + 4.5*eu(:)) - 1.5*u2 )
 
 	end
 !!!*************************************************************************************************************!!!
@@ -493,11 +512,11 @@ contains
 	end
 !!!*************************************************************************************************************!!!
 	subroutine set_host
-    use precision_m
-    use host_var
-    implicit none
-    !real(fp_kind) :: ri2
-    is_solid_nodehost=0
+		use precision_m
+		use host_var
+		implicit none
+		!real(fp_kind) :: ri2
+		is_solid_nodehost=0
 	end
 !!!*************************************************************************************************************!!!
 	subroutine results_output_host
