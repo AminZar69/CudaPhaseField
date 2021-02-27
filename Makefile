@@ -13,8 +13,8 @@ $(project): $(objects)
 	$(cc) $(objects) -o $(bindir)/$(project) $(ldflags)
 	
 ####Compilation####	
-$(objdir)/precision_m.o: $(srcdir)/precision_m.cuf
-	$(cc) -c $(srcdir)/precision_m.cuf -o $(objdir)/precision_m.o 
+$(objdir)/precision_m.o: $(srcdir)/precision_m.f90
+	$(cc) -c $(srcdir)/precision_m.f90 -o $(objdir)/precision_m.o 
 	
 $(objdir)/host_var.o: $(srcdir)/host_var.cuf
 	$(cc) -c $(srcdir)/host_var.cuf -o $(objdir)/host_var.o
