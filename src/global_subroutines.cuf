@@ -21,8 +21,7 @@ module global_subroutines
 contains
 	attributes(global) subroutine phi_cal
 		use precision_m
-		use device_var, only : nxd, nyd, is_solid_node, density, phi1, phi2, phi3, rho, &
-		h10, h11, h12, h13, h14, h15, h16, h17, h18, h20, h21, h22, h23, h24, h25, h26, h27, h28
+		use device_var, only : nxd, nyd, is_solid_node, density, phi1, phi2, phi3, rho, h1, h2
 		implicit none
 		
 		integer :: x, y, n(2)
@@ -36,8 +35,8 @@ contains
 				
 					
 					
-				phi1(x,y)= h10(x,y) + h11(x,y) + h12(x,y) + h13(x,y) + h14(x,y) + h15(x,y) + h16(x,y)+ h17(x,y)+ h18(x,y)
-				phi2(x,y)= h20(x,y) + h21(x,y) + h22(x,y) + h23(x,y) + h24(x,y) + h25(x,y) + h26(x,y)+ h27(x,y)+ h28(x,y)
+				phi1(x,y)= h1(x,y,0) + h1(x,y,1) + h1(x,y,2) + h1(x,y,3) + h1(x,y,4) + h1(x,y,5) + h1(x,y,6)+ h1(x,y,7)+ h1(x,y,8)
+				phi2(x,y)= h2(x,y,0) + h2(x,y,1) + h2(x,y,2) + h2(x,y,3) + h2(x,y,4) + h2(x,y,5) + h2(x,y,6)+ h2(x,y,7)+ h2(x,y,8)
 				
 				!call syncthreads()
 					
@@ -226,7 +225,7 @@ contains
 		ga_wa0, ga_wa1, ga_wa2, ga_wa3, ga_wa4, ga_wa5, ga_wa6, ga_wa7, ga_wa8, &
 		wa, sxx, sxy, syy, fmx, fmy, fsx, fsy, fx, fy, density, tauu, tau1, tau2, tau3, is_solid_node, heav1, heav2, &
 		dphi1dx, dphi2dx, dphi3dx, dphi1dy, dphi2dy, dphi3dy, p, ux, uy, mu1, mu2, mu3, rho, phi1, phi2, phi3, &
-		g0, g1, g2, g3, g4, g5, g6, g7, g8, geq0, geq1, geq2, geq3, geq4, geq5, geq6, geq7, geq8, fg
+		g, geq0, geq1, geq2, geq3, geq4, geq5, geq6, geq7, geq8, fg
 		
 		implicit none
 		
@@ -245,7 +244,7 @@ contains
 		
 			
 
-			p(x,y) = g0(x,y) + g1(x,y) + g2(x,y) + g3(x,y) + g4(x,y)+ g5(x,y) + g6(x,y) + g7(x,y) + g8(x,y)
+			p(x,y) = g(x,y,0) + g(x,y,1) + g(x,y,2) + g(x,y,3) + g(x,y,4)+ g(x,y,5) + g(x,y,6) + g(x,y,7) + g(x,y,8)
 						
 			
 		
@@ -294,32 +293,32 @@ contains
 			geq7(x,y) = p(x,y) * wa(7) + ga_wa7(x,y)
 			geq8(x,y) = p(x,y) * wa(8) + ga_wa8(x,y)
 			
-			sxx(x,y) = (g1(x,y) - geq1(x,y)) * ex(1) * ex(1) + &
-			(g2(x,y) - geq2(x,y)) * ex(2) * ex(2) + &
-			(g3(x,y) - geq3(x,y)) * ex(3) * ex(3) + &
-			(g4(x,y) - geq4(x,y)) * ex(4) * ex(4) + &
-			(g5(x,y) - geq5(x,y)) * ex(5) * ex(5) + &
-			(g6(x,y) - geq6(x,y)) * ex(6) * ex(6) + &
-			(g7(x,y) - geq7(x,y)) * ex(7) * ex(7) + &
-			(g8(x,y) - geq8(x,y)) * ex(8) * ex(8)
+			sxx(x,y) = (g(x,y,1) - geq1(x,y)) * ex(1) * ex(1) + &
+			(g(x,y,2) - geq2(x,y)) * ex(2) * ex(2) + &
+			(g(x,y,3) - geq3(x,y)) * ex(3) * ex(3) + &
+			(g(x,y,4) - geq4(x,y)) * ex(4) * ex(4) + &
+			(g(x,y,5) - geq5(x,y)) * ex(5) * ex(5) + &
+			(g(x,y,6) - geq6(x,y)) * ex(6) * ex(6) + &
+			(g(x,y,7) - geq7(x,y)) * ex(7) * ex(7) + &
+			(g(x,y,8) - geq8(x,y)) * ex(8) * ex(8)
 			
-			sxy(x,y) = (g1(x,y) - geq1(x,y)) * ex(1) * ey(1) + &
-			(g2(x,y) - geq2(x,y)) * ex(2) * ey(2) + &
-			(g3(x,y) - geq3(x,y)) * ex(3) * ey(3) + &
-			(g4(x,y) - geq4(x,y)) * ex(4) * ey(4) + &
-			(g5(x,y) - geq5(x,y)) * ex(5) * ey(5) + &
-			(g6(x,y) - geq6(x,y)) * ex(6) * ey(6) + &
-			(g7(x,y) - geq7(x,y)) * ex(7) * ey(7) + &
-			(g8(x,y) - geq8(x,y)) * ex(8) * ey(8)
+			sxy(x,y) = (g(x,y,1) - geq1(x,y)) * ex(1) * ey(1) + &
+			(g(x,y,2) - geq2(x,y)) * ex(2) * ey(2) + &
+			(g(x,y,3) - geq3(x,y)) * ex(3) * ey(3) + &
+			(g(x,y,4) - geq4(x,y)) * ex(4) * ey(4) + &
+			(g(x,y,5) - geq5(x,y)) * ex(5) * ey(5) + &
+			(g(x,y,6) - geq6(x,y)) * ex(6) * ey(6) + &
+			(g(x,y,7) - geq7(x,y)) * ex(7) * ey(7) + &
+			(g(x,y,8) - geq8(x,y)) * ex(8) * ey(8)
 			
-			syy(x,y) = (g1(x,y) - geq1(x,y)) * ey(1) * ey(1) + &
-			(g2(x,y) - geq2(x,y)) * ey(2) * ey(2)  + &
-			(g3(x,y) - geq3(x,y)) * ey(3) * ey(3)  + &
-			(g4(x,y) - geq4(x,y)) * ey(4) * ey(4)  + &
-			(g5(x,y) - geq5(x,y)) * ey(5) * ey(5)  + &
-			(g6(x,y) - geq6(x,y)) * ey(6) * ey(6)  + &
-			(g7(x,y) - geq7(x,y)) * ey(7) * ey(7)  + &
-			(g8(x,y) - geq8(x,y)) * ey(8) * ey(8) 
+			syy(x,y) = (g(x,y,1) - geq1(x,y)) * ey(1) * ey(1) + &
+			(g(x,y,2) - geq2(x,y)) * ey(2) * ey(2)  + &
+			(g(x,y,3) - geq3(x,y)) * ey(3) * ey(3)  + &
+			(g(x,y,4) - geq4(x,y)) * ey(4) * ey(4)  + &
+			(g(x,y,5) - geq5(x,y)) * ey(5) * ey(5)  + &
+			(g(x,y,6) - geq6(x,y)) * ey(6) * ey(6)  + &
+			(g(x,y,7) - geq7(x,y)) * ey(7) * ey(7)  + &
+			(g(x,y,8) - geq8(x,y)) * ey(8) * ey(8) 
 			
 			
 	
@@ -346,8 +345,8 @@ contains
 						
 
 			if(is_solid_node(x,y)==0) then
-				ux(x,y) = (g1(x,y)-g3(x,y)+g5(x,y)-g6(x,y)-g7(x,y)+g8(x,y)) + 0.5*fx(x,y)/rho(x,y) 
-				uy(x,y) = (g2(x,y)-g4(x,y)+g5(x,y)+g6(x,y)-g7(x,y)-g8(x,y)) + 0.5*fy(x,y)/rho(x,y) 
+				ux(x,y) = (g(x,y,1)-g(x,y,3)+g(x,y,5)-g(x,y,6)-g(x,y,7)+g(x,y,8)) + 0.5*fx(x,y)/rho(x,y) 
+				uy(x,y) = (g(x,y,2)-g(x,y,4)+g(x,y,5)+g(x,y,6)-g(x,y,7)-g(x,y,8)) + 0.5*fy(x,y)/rho(x,y) 
 			else
 				ux(x,y) = 0
 				uy(x,y) = 0
@@ -366,8 +365,7 @@ contains
 		hlph17, hlph18, hlph20, hlph21, hlph22, hlph23, hlph24, hlph25, hlph26, hlph27, hlph28, &
 		heq10, heq11, heq12, heq13, heq14, heq15, heq16, heq17, heq18, heq20, heq21, heq22, &
 		heq23, heq24, heq25, heq26, heq27, heq28, phi1, phi2, phi3, ni1, ni2, ni3, nj1, nj2, nj3, &
-		h10, h11, h12, h13, h14, h15, h16, h17, h18, h20, h21, h22, h23, h24, &
-		h25, h26, h27, h28, is_solid_node, ex, ey, wa, w, w_c
+		h1, h2, is_solid_node, ex, ey, wa, w, w_c
 		implicit none
 		!real(fp_kind), shared, dimension(32,32) :: h10_s, h11_s, h12_s, h13_s, h14_s, h15_s, h16_s, h17_s, h18_s
 		!real(fp_kind), shared, dimension(16,16) :: h20_s, h21_s, h22_s, h23_s, h24_s, h25_s, h26_s, h27_s, h28_s
@@ -383,25 +381,25 @@ contains
 	
 		if (x<=n(1) .and. x>=1 .and. y>=1 .and.  y<=n(2)) then
 
-			! h10_s(xs,ys) = h10(x,y)
-			! h11_s(xs,ys) = h11(x,y)
-			! h12_s(xs,ys) = h12(x,y)
-			! h13_s(xs,ys) = h13(x,y)
-			! h14_s(xs,ys) = h14(x,y)
-			! h15_s(xs,ys) = h15(x,y)
-			! h16_s(xs,ys) = h16(x,y)
-			! h17_s(xs,ys) = h17(x,y)
-			! h18_s(xs,ys) = h18(x,y)
+			! h10_s(xs,ys) = h1(x,y,0)
+			! h11_s(xs,ys) = h1(x,y,1)
+			! h12_s(xs,ys) = h1(x,y,2)
+			! h13_s(xs,ys) = h1(x,y,3)
+			! h14_s(xs,ys) = h1(x,y,4)
+			! h15_s(xs,ys) = h1(x,y,5)
+			! h16_s(xs,ys) = h1(x,y,6)
+			! h17_s(xs,ys) = h1(x,y,7)
+			! h18_s(xs,ys) = h1(x,y,8)
 			
-			! h20_s(xs,ys) = h20(x,y)
-			! h21_s(xs,ys) = h21(x,y)
-			! h22_s(xs,ys) = h22(x,y)
-			! h23_s(xs,ys) = h23(x,y)
-			! h24_s(xs,ys) = h24(x,y)
-			! h25_s(xs,ys) = h25(x,y)
-			! h26_s(xs,ys) = h26(x,y)
-			! h27_s(xs,ys) = h27(x,y)
-			! h28_s(xs,ys) = h28(x,y)
+			! h20_s(xs,ys) = h2(x,y,0)
+			! h21_s(xs,ys) = h2(x,y,1)
+			! h22_s(xs,ys) = h2(x,y,2)
+			! h23_s(xs,ys) = h2(x,y,3)
+			! h24_s(xs,ys) = h2(x,y,4)
+			! h25_s(xs,ys) = h2(x,y,5)
+			! h26_s(xs,ys) = h2(x,y,6)
+			! h27_s(xs,ys) = h2(x,y,7)
+			! h28_s(xs,ys) = h2(x,y,8)
 				
 			u2(x,y) = ux(x,y)**2. + uy(x,y)**2.
 			
@@ -561,15 +559,15 @@ contains
 	
 			if (is_solid_node(x,y)==0) then
 			
-				h10(x,y) = h10(x,y) * (1.-w_c) + heq10(x,y) * w_c +  hlph10(x,y)
-				h11(x,y) = h11(x,y) * (1.-w_c) + heq11(x,y) * w_c +  hlph11(x,y)
-				h12(x,y) = h12(x,y) * (1.-w_c) + heq12(x,y) * w_c +  hlph12(x,y)
-				h13(x,y) = h13(x,y) * (1.-w_c) + heq13(x,y) * w_c +  hlph13(x,y)
-				h14(x,y) = h14(x,y) * (1.-w_c) + heq14(x,y) * w_c +  hlph14(x,y)
-				h15(x,y) = h15(x,y) * (1.-w_c) + heq15(x,y) * w_c +  hlph15(x,y)
-				h16(x,y) = h16(x,y) * (1.-w_c) + heq16(x,y) * w_c +  hlph16(x,y)
-				h17(x,y) = h17(x,y) * (1.-w_c) + heq17(x,y) * w_c +  hlph17(x,y)
-				h18(x,y) = h18(x,y) * (1.-w_c) + heq18(x,y) * w_c +  hlph18(x,y)
+				h1(x,y,0) = h1(x,y,0) * (1.-w_c) + heq10(x,y) * w_c +  hlph10(x,y)
+				h1(x,y,1) = h1(x,y,1) * (1.-w_c) + heq11(x,y) * w_c +  hlph11(x,y)
+				h1(x,y,2) = h1(x,y,2) * (1.-w_c) + heq12(x,y) * w_c +  hlph12(x,y)
+				h1(x,y,3) = h1(x,y,3) * (1.-w_c) + heq13(x,y) * w_c +  hlph13(x,y)
+				h1(x,y,4) = h1(x,y,4) * (1.-w_c) + heq14(x,y) * w_c +  hlph14(x,y)
+				h1(x,y,5) = h1(x,y,5) * (1.-w_c) + heq15(x,y) * w_c +  hlph15(x,y)
+				h1(x,y,6) = h1(x,y,6) * (1.-w_c) + heq16(x,y) * w_c +  hlph16(x,y)
+				h1(x,y,7) = h1(x,y,7) * (1.-w_c) + heq17(x,y) * w_c +  hlph17(x,y)
+				h1(x,y,8) = h1(x,y,8) * (1.-w_c) + heq18(x,y) * w_c +  hlph18(x,y)
 				
 				! h10_s(xs,ys) = h10_s(xs,ys) * (1.-w_c) + heq10(x,y) * w_c +  hlph10(x,y)
 				! h11_s(xs,ys) = h11_s(xs,ys) * (1.-w_c) + heq11(x,y) * w_c +  hlph11(x,y)
@@ -584,15 +582,15 @@ contains
 				
 				
 				
-				h20(x,y) = h20(x,y) * (1.-w_c) + heq20(x,y) * w_c +  hlph20(x,y)
-				h21(x,y) = h21(x,y) * (1.-w_c) + heq21(x,y) * w_c +  hlph21(x,y)
-				h22(x,y) = h22(x,y) * (1.-w_c) + heq22(x,y) * w_c +  hlph22(x,y)
-				h23(x,y) = h23(x,y) * (1.-w_c) + heq23(x,y) * w_c +  hlph23(x,y)
-				h24(x,y) = h24(x,y) * (1.-w_c) + heq24(x,y) * w_c +  hlph24(x,y)
-				h25(x,y) = h25(x,y) * (1.-w_c) + heq25(x,y) * w_c +  hlph25(x,y)
-				h26(x,y) = h26(x,y) * (1.-w_c) + heq26(x,y) * w_c +  hlph26(x,y)
-				h27(x,y) = h27(x,y) * (1.-w_c) + heq27(x,y) * w_c +  hlph27(x,y)
-				h28(x,y) = h28(x,y) * (1.-w_c) + heq28(x,y) * w_c +  hlph28(x,y)
+				h2(x,y,0) = h2(x,y,0) * (1.-w_c) + heq20(x,y) * w_c +  hlph20(x,y)
+				h2(x,y,1) = h2(x,y,1) * (1.-w_c) + heq21(x,y) * w_c +  hlph21(x,y)
+				h2(x,y,2) = h2(x,y,2) * (1.-w_c) + heq22(x,y) * w_c +  hlph22(x,y)
+				h2(x,y,3) = h2(x,y,3) * (1.-w_c) + heq23(x,y) * w_c +  hlph23(x,y)
+				h2(x,y,4) = h2(x,y,4) * (1.-w_c) + heq24(x,y) * w_c +  hlph24(x,y)
+				h2(x,y,5) = h2(x,y,5) * (1.-w_c) + heq25(x,y) * w_c +  hlph25(x,y)
+				h2(x,y,6) = h2(x,y,6) * (1.-w_c) + heq26(x,y) * w_c +  hlph26(x,y)
+				h2(x,y,7) = h2(x,y,7) * (1.-w_c) + heq27(x,y) * w_c +  hlph27(x,y)
+				h2(x,y,8) = h2(x,y,8) * (1.-w_c) + heq28(x,y) * w_c +  hlph28(x,y)
 				
 				! h20_s(xs,ys) = h20_s(xs,ys) * (1.-w_c) + heq20(x,y) * w_c +  hlph20(x,y)
 				! h21_s(xs,ys) = h21_s(xs,ys) * (1.-w_c) + heq21(x,y) * w_c +  hlph21(x,y)
@@ -606,25 +604,25 @@ contains
 				
 				!call syncthreads()
 				
-				! h10(x,y) = h10_s(xs, ys)
-				! h11(x,y) = h11_s(xs, ys)
-				! h12(x,y) = h12_s(xs, ys)
-				! h13(x,y) = h13_s(xs, ys)
-				! h14(x,y) = h14_s(xs, ys)
-				! h15(x,y) = h15_s(xs, ys)
-				! h16(x,y) = h16_s(xs, ys)
-				! h17(x,y) = h17_s(xs, ys)
-				! h18(x,y) = h18_s(xs, ys)
+				! h1(x,y,0) = h10_s(xs, ys)
+				! h1(x,y,1) = h11_s(xs, ys)
+				! h1(x,y,2) = h12_s(xs, ys)
+				! h1(x,y,3) = h13_s(xs, ys)
+				! h1(x,y,4) = h14_s(xs, ys)
+				! h1(x,y,5) = h15_s(xs, ys)
+				! h1(x,y,6) = h16_s(xs, ys)
+				! h1(x,y,7) = h17_s(xs, ys)
+				! h1(x,y,8) = h18_s(xs, ys)
 				
-				! h20(x,y) = h20_s(xs, ys)
-				! h21(x,y) = h21_s(xs, ys)
-				! h22(x,y) = h22_s(xs, ys)
-				! h23(x,y) = h23_s(xs, ys)
-				! h24(x,y) = h24_s(xs, ys)
-				! h25(x,y) = h25_s(xs, ys)
-				! h26(x,y) = h26_s(xs, ys)
-				! h27(x,y) = h27_s(xs, ys)
-				! h28(x,y) = h28_s(xs, ys)
+				! h2(x,y,0) = h20_s(xs, ys)
+				! h2(x,y,1) = h21_s(xs, ys)
+				! h2(x,y,2) = h22_s(xs, ys)
+				! h2(x,y,3) = h23_s(xs, ys)
+				! h2(x,y,4) = h24_s(xs, ys)
+				! h2(x,y,5) = h25_s(xs, ys)
+				! h2(x,y,6) = h26_s(xs, ys)
+				! h2(x,y,7) = h27_s(xs, ys)
+				! h2(x,y,8) = h28_s(xs, ys)
 			
 				
 				
@@ -650,7 +648,7 @@ contains
 		ga_wa7, ga_wa8, wa, fpx, fpy, &
 		tauu, sxx, sxy, syy, fmx, fmy, fsx, fsy, fx, fy, density, is_solid_node, phi1, phi2, phi3, &
 		ux, uy, mu1, mu2, mu3, dphi1dx, dphi2dx, dphi3dx, dphi1dy, dphi2dy, dphi3dy, p, rho, &
-		geq0, geq1, geq2, geq3, geq4, geq5, geq6, geq7, geq8, g0, g1, g2, g3, g4, g5, g6, g7, g8, &
+		geq0, geq1, geq2, geq3, geq4, geq5, geq6, geq7, geq8, g, &
 		hlpg0, hlpg1, hlpg2, hlpg3, hlpg4, hlpg5, hlpg6, hlpg7, hlpg8, ef0, ef1, ef2, ef3, ef4, ef5, ef6, ef7, ef8
 		implicit none
 		
@@ -680,32 +678,32 @@ contains
 			geq8(x,y) = p(x,y) * wa(8) + ga_wa8(x,y)
 			
 			
-			sxx(x,y) = (g1(x,y) - geq1(x,y)) * ex(1) * ex(1) + &
-			(g2(x,y) - geq2(x,y)) * ex(2) * ex(2) + &
-			(g3(x,y) - geq3(x,y)) * ex(3) * ex(3) + &
-			(g4(x,y) - geq4(x,y)) * ex(4) * ex(4) + &
-			(g5(x,y) - geq5(x,y)) * ex(5) * ex(5) + &
-			(g6(x,y) - geq6(x,y)) * ex(6) * ex(6) + &
-			(g7(x,y) - geq7(x,y)) * ex(7) * ex(7) + &
-			(g8(x,y) - geq8(x,y)) * ex(8) * ex(8)
+			sxx(x,y) = (g(x,y,1) - geq1(x,y)) * ex(1) * ex(1) + &
+			(g(x,y,2) - geq2(x,y)) * ex(2) * ex(2) + &
+			(g(x,y,3) - geq3(x,y)) * ex(3) * ex(3) + &
+			(g(x,y,4) - geq4(x,y)) * ex(4) * ex(4) + &
+			(g(x,y,5) - geq5(x,y)) * ex(5) * ex(5) + &
+			(g(x,y,6) - geq6(x,y)) * ex(6) * ex(6) + &
+			(g(x,y,7) - geq7(x,y)) * ex(7) * ex(7) + &
+			(g(x,y,8) - geq8(x,y)) * ex(8) * ex(8)
 
-			sxy(x,y) = (g1(x,y) - geq1(x,y)) * ex(1) * ey(1) + &
-			(g2(x,y) - geq2(x,y)) * ex(2) * ey(2) + &
-			(g3(x,y) - geq3(x,y)) * ex(3) * ey(3) + &
-			(g4(x,y) - geq4(x,y)) * ex(4) * ey(4) + &
-			(g5(x,y) - geq5(x,y)) * ex(5) * ey(5) + &
-			(g6(x,y) - geq6(x,y)) * ex(6) * ey(6) + &
-			(g7(x,y) - geq7(x,y)) * ex(7) * ey(7) + &
-			(g8(x,y) - geq8(x,y)) * ex(8) * ey(8)
+			sxy(x,y) = (g(x,y,1) - geq1(x,y)) * ex(1) * ey(1) + &
+			(g(x,y,2) - geq2(x,y)) * ex(2) * ey(2) + &
+			(g(x,y,3) - geq3(x,y)) * ex(3) * ey(3) + &
+			(g(x,y,4) - geq4(x,y)) * ex(4) * ey(4) + &
+			(g(x,y,5) - geq5(x,y)) * ex(5) * ey(5) + &
+			(g(x,y,6) - geq6(x,y)) * ex(6) * ey(6) + &
+			(g(x,y,7) - geq7(x,y)) * ex(7) * ey(7) + &
+			(g(x,y,8) - geq8(x,y)) * ex(8) * ey(8)
 
-			syy(x,y) = (g1(x,y) - geq1(x,y)) * ey(1) * ey(1) + &
-			(g2(x,y) - geq2(x,y)) * ey(2) * ey(2)  + &
-			(g3(x,y) - geq3(x,y)) * ey(3) * ey(3)  + &
-			(g4(x,y) - geq4(x,y)) * ey(4) * ey(4)  + &
-			(g5(x,y) - geq5(x,y)) * ey(5) * ey(5)  + &
-			(g6(x,y) - geq6(x,y)) * ey(6) * ey(6)  + &
-			(g7(x,y) - geq7(x,y)) * ey(7) * ey(7)  + &
-			(g8(x,y) - geq8(x,y)) * ey(8) * ey(8) 
+			syy(x,y) = (g(x,y,1) - geq1(x,y)) * ey(1) * ey(1) + &
+			(g(x,y,2) - geq2(x,y)) * ey(2) * ey(2)  + &
+			(g(x,y,3) - geq3(x,y)) * ey(3) * ey(3)  + &
+			(g(x,y,4) - geq4(x,y)) * ey(4) * ey(4)  + &
+			(g(x,y,5) - geq5(x,y)) * ey(5) * ey(5)  + &
+			(g(x,y,6) - geq6(x,y)) * ey(6) * ey(6)  + &
+			(g(x,y,7) - geq7(x,y)) * ey(7) * ey(7)  + &
+			(g(x,y,8) - geq8(x,y)) * ey(8) * ey(8) 
 			
 			
 			
@@ -730,7 +728,7 @@ contains
 		use device_var, only : nxd, nyd, ex, ey, &
 		ga_wa0, ga_wa1, ga_wa2, ga_wa3, ga_wa4, ga_wa5, ga_wa6, ga_wa7, ga_wa8, &
 		wa, fx, fy, fsx, fsy, fpx, fpy, fmx, fmy, tauu, is_solid_node, ef0, ef1, ef2, ef3, ef4, ef5, ef6, ef7, ef8, &
-		p, ux, uy, rho, g0, g1, g2, g3, g4, g5, g6, g7, g8, geq0, geq1, geq2, geq3, geq4, geq5, geq6, geq7, geq8, &
+		p, ux, uy, rho, g, geq0, geq1, geq2, geq3, geq4, geq5, geq6, geq7, geq8, &
 		hlpg0, hlpg1, hlpg2, hlpg3, hlpg4, hlpg5, hlpg6, hlpg7, hlpg8, fg
 		implicit none
 		! real(fp_kind), intent(inout) :: h(2,0:8,0:nxd+1,0:nyd+1), g(0:8,0:nxd+1,0:nyd+1)
@@ -795,15 +793,15 @@ contains
 
 			if (is_solid_node(x,y)==0) then
 
-				g0(x,y) = g0(x,y) * (1.-(1./tauu(x,y))) + geq0(x,y) * (1./tauu(x,y)) +  hlpg0(x,y)
-				g1(x,y) = g1(x,y) * (1.-(1./tauu(x,y))) + geq1(x,y) * (1./tauu(x,y)) +  hlpg1(x,y)
-				g2(x,y) = g2(x,y) * (1.-(1./tauu(x,y))) + geq2(x,y) * (1./tauu(x,y)) +  hlpg2(x,y)
-				g3(x,y) = g3(x,y) * (1.-(1./tauu(x,y))) + geq3(x,y) * (1./tauu(x,y)) +  hlpg3(x,y)
-				g4(x,y) = g4(x,y) * (1.-(1./tauu(x,y))) + geq4(x,y) * (1./tauu(x,y)) +  hlpg4(x,y)
-				g5(x,y) = g5(x,y) * (1.-(1./tauu(x,y))) + geq5(x,y) * (1./tauu(x,y)) +  hlpg5(x,y)
-				g6(x,y) = g6(x,y) * (1.-(1./tauu(x,y))) + geq6(x,y) * (1./tauu(x,y)) +  hlpg6(x,y)
-				g7(x,y) = g7(x,y) * (1.-(1./tauu(x,y))) + geq7(x,y) * (1./tauu(x,y)) +  hlpg7(x,y)
-				g8(x,y) = g8(x,y) * (1.-(1./tauu(x,y))) + geq8(x,y) * (1./tauu(x,y)) +  hlpg8(x,y)
+				g(x,y,0) = g(x,y,0) * (1.-(1./tauu(x,y))) + geq0(x,y) * (1./tauu(x,y)) +  hlpg0(x,y)
+				g(x,y,1) = g(x,y,1) * (1.-(1./tauu(x,y))) + geq1(x,y) * (1./tauu(x,y)) +  hlpg1(x,y)
+				g(x,y,2) = g(x,y,2) * (1.-(1./tauu(x,y))) + geq2(x,y) * (1./tauu(x,y)) +  hlpg2(x,y)
+				g(x,y,3) = g(x,y,3) * (1.-(1./tauu(x,y))) + geq3(x,y) * (1./tauu(x,y)) +  hlpg3(x,y)
+				g(x,y,4) = g(x,y,4) * (1.-(1./tauu(x,y))) + geq4(x,y) * (1./tauu(x,y)) +  hlpg4(x,y)
+				g(x,y,5) = g(x,y,5) * (1.-(1./tauu(x,y))) + geq5(x,y) * (1./tauu(x,y)) +  hlpg5(x,y)
+				g(x,y,6) = g(x,y,6) * (1.-(1./tauu(x,y))) + geq6(x,y) * (1./tauu(x,y)) +  hlpg6(x,y)
+				g(x,y,7) = g(x,y,7) * (1.-(1./tauu(x,y))) + geq7(x,y) * (1./tauu(x,y)) +  hlpg7(x,y)
+				g(x,y,8) = g(x,y,8) * (1.-(1./tauu(x,y))) + geq8(x,y) * (1./tauu(x,y)) +  hlpg8(x,y)
 
 			end if
 					
@@ -816,8 +814,7 @@ contains
 
 	attributes(global) subroutine periodic_f
 		use precision_m
-		use device_var, only : nxd, nyd, h10, h11, h12, h13, h14, h15, h16, h17, h18, &
-		h20, h21, h22, h23, h24, h25, h26, h27, h28, g0, g1, g2, g3, g4, g5, g6, g7, g8
+		use device_var, only : nxd, nyd, h1, h2, g
 		implicit none
 		integer :: x, y, n(2)
 		
@@ -830,133 +827,133 @@ contains
 		
 		
 			! !-- left and right boundaries
-			g0(0,y)=g0(nxd,y) 
-			g0(nxd+1,y)=g0(1,y) 
+			g(0,y,0)=g(nxd,y,0) 
+			g(nxd+1,y,0)=g(1,y,0) 
 			! !-- bottom and top boundaries
-			g0(x,0) = g0(x,nyd) 
-			g0(x,nyd+1) = g0(x,1)
+			g(x,0,0) = g(x,nyd,0) 
+			g(x,nyd+1,0) = g(x,1,0)
 
 			! !-- left and right boundaries
-			g1(0,y)=g1(nxd,y) 
-			g1(nxd+1,y)=g1(1,y) 
+			g(0,y,1)=g(nxd,y,1) 
+			g(nxd+1,y,1)=g(1,y,1) 
 			! !-- bottom and top boundaries
-			g1(x,0) = g1(x,nyd) 
-			g1(x,nyd+1) = g1(x,1) 
+			g(x,0,1) = g(x,nyd,1) 
+			g(x,nyd+1,1) = g(x,1,1) 
 
 			! !-- left and right boundaries
-			g2(0,y)=g2(nxd,y) 
-			g2(nxd+1,y)=g2(1,y) 
+			g(0,y,2)=g(nxd,y,2) 
+			g(nxd+1,y,2)=g(1,y,2) 
 			! !-- bottom and top boundaries
-			g2(x,0) = g2(x,nyd) 
-			g2(x,nyd+1) = g2(x,1) 	
+			g(x,0,2) = g(x,nyd,2) 
+			g(x,nyd+1,2) = g(x,1,2) 	
 
 			! !-- left and right boundaries
-			g3(0,y)=g3(nxd,y) 
-			g3(nxd+1,y)=g3(1,y) 
+			g(0,y,3)=g(nxd,y,3) 
+			g(nxd+1,y,3)=g(1,y,3) 
 			! !-- bottom and top boundaries
-			g3(x,0) = g3(x,nyd) 
-			g3(x,nyd+1) = g3(x,1) 	
+			g(x,0,3) = g(x,nyd,3) 
+			g(x,nyd+1,3) = g(x,1,3) 	
 
 			! !-- left and right boundaries
-			g4(0,y)=g4(nxd,y) 
-			g4(nxd+1,y)=g4(1,y) 
+			g(0,y,4)=g(nxd,y,4) 
+			g(nxd+1,y,4)=g(1,y,4) 
 			! !-- bottom and top boundaries
-			g4(x,0) = g4(x,nyd) 
-			g4(x,nyd+1) = g4(x,1) 	
+			g(x,0,4) = g(x,nyd,4) 
+			g(x,nyd+1,4) = g(x,1,4) 	
 
 			! !-- left and right boundaries
-			g5(0,y)=g5(nxd,y) 
-			g5(nxd+1,y)=g5(1,y) 
+			g(0,y,5)=g(nxd,y,5) 
+			g(nxd+1,y,5)=g(1,y,5) 
 			! !-- bottom and top boundaries
-			g5(x,0) = g5(x,nyd) 
-			g5(x,nyd+1) = g5(x,1) 	
+			g(x,0,5) = g(x,nyd,5) 
+			g(x,nyd+1,5) = g(x,1,5) 	
 
 			! !-- left and right boundaries
-			g6(0,y)=g6(nxd,y) 
-			g6(nxd+1,y)=g6(1,y) 
+			g(0,y,6)=g(nxd,y,6) 
+			g(nxd+1,y,6)=g(1,y,6) 
 			! !-- bottom and top boundaries
-			g6(x,0) = g6(x,nyd) 
-			g6(x,nyd+1) = g6(x,1) 	
+			g(x,0,6) = g(x,nyd,6) 
+			g(x,nyd+1,6) = g(x,1,6) 	
 
 			! !-- left and right boundaries
-			g7(0,y)=g7(nxd,y) 
-			g7(nxd+1,y)=g7(1,y) 
+			g(0,y,7)=g(nxd,y,7) 
+			g(nxd+1,y,7)=g(1,y,7) 
 			! !-- bottom and top boundaries
-			g7(x,0) = g7(x,nyd) 
-			g7(x,nyd+1) = g7(x,1) 	
+			g(x,0,7) = g(x,nyd,7) 
+			g(x,nyd+1,7) = g(x,1,7) 	
 
 			! !-- left and right boundaries
-			g8(0,y)=g8(nxd,y) 
-			g8(nxd+1,y)=g8(1,y) 
+			g(0,y,8)=g(nxd,y,8) 
+			g(nxd+1,y,8)=g(1,y,8) 
 			! !-- bottom and top boundaries
-			g8(x,0) = g8(x,nyd) 
-			g8(x,nyd+1) = g8(x,1) 				
+			g(x,0,8) = g(x,nyd,8) 
+			g(x,nyd+1,8) = g(x,1,8) 				
 		
 
 
 			
 			!-- left and right boundaries
-			h10(0  ,y)=h10(nxd,y) 
-			h10(nxd+1,y)=h10(1 ,y) 
+			h1(0  ,y,0)=h1(nxd,y,0) 
+			h1(nxd+1,y,0)=h1(1 ,y,0) 
 			!-- bottom and top boundaries
-			h10(x, 0 )=h10(x,nyd) 
-			h10(x,nyd+1)=h10(x,1 ) 
+			h1(x, 0 ,0)=h1(x,nyd,0) 
+			h1(x,nyd+1,0)=h1(x,1 ,0) 
 			
 			!-- left and right boundaries
-			h11(0  ,y)=h11(nxd,y) 
-			h11(nxd+1,y)=h11(1 ,y) 
+			h1(0  ,y,1)=h1(nxd,y,1) 
+			h1(nxd+1,y,1)=h1(1 ,y,1) 
 			!-- bottom and top boundaries
-			h11(x, 0 )=h11(x,nyd) 
-			h11(x,nyd+1)=h11(x,1 ) 
+			h1(x, 0 ,1)=h1(x,nyd,1) 
+			h1(x,nyd+1,1)=h1(x,1 ,1) 
 			
 			!-- left and right boundaries
-			h12(0  ,y)=h12(nxd,y) 
-			h12(nxd+1,y)=h12(1 ,y) 
+			h1(0  ,y,2)=h1(nxd,y,2) 
+			h1(nxd+1,y,2)=h1(1 ,y,2) 
 			!-- bottom and top boundaries
-			h12(x, 0 )=h12(x,nyd) 
-			h12(x,nyd+1)=h12(x,1 ) 
+			h1(x, 0 ,2)=h1(x,nyd,2) 
+			h1(x,nyd+1,2)=h1(x,1 ,2) 
 			
 			!-- left and right boundaries
-			h13(0  ,y)=h13(nxd,y) 
-			h13(nxd+1,y)=h13(1 ,y) 
+			h1(0  ,y,3)=h1(nxd,y,3) 
+			h1(nxd+1,y,3)=h1(1 ,y,3) 
 			!-- bottom and top boundaries
-			h13(x, 0 )=h13(x,nyd) 
-			h13(x,nyd+1)=h13(x,1 ) 
+			h1(x, 0 ,3)=h1(x,nyd,3) 
+			h1(x,nyd+1,3)=h1(x,1 ,3) 
 			
 			!-- left and right boundaries
-			h14(0  ,y)=h14(nxd,y) 
-			h14(nxd+1,y)=h14(1 ,y) 
+			h1(0  ,y,4)=h1(nxd,y,4) 
+			h1(nxd+1,y,4)=h1(1 ,y,4) 
 			!-- bottom and top boundaries
-			h14(x, 0 )=h14(x,nyd) 
-			h14(x,nyd+1)=h14(x,1 ) 
+			h1(x, 0 ,4)=h1(x,nyd,4) 
+			h1(x,nyd+1,4)=h1(x,1 ,4) 
 			
 			!-- left and right boundaries
-			h15(0  ,y)=h15(nxd,y) 
-			h15(nxd+1,y)=h15(1 ,y) 
+			h1(0  ,y,5)=h1(nxd,y,5) 
+			h1(nxd+1,y,5)=h1(1 ,y,5) 
 			!-- bottom and top boundaries
-			h15(x, 0 )=h15(x,nyd) 
-			h15(x,nyd+1)=h15(x,1 ) 
+			h1(x, 0 ,5)=h1(x,nyd,5) 
+			h1(x,nyd+1,5)=h1(x,1 ,5) 
 			
 			!-- left and right boundaries
-			h16(0  ,y)=h16(nxd,y) 
-			h16(nxd+1,y)=h16(1 ,y) 
+			h1(0  ,y,6)=h1(nxd,y,6) 
+			h1(nxd+1,y,6)=h1(1 ,y,6) 
 			!-- bottom and top boundaries
-			h16(x, 0 )=h16(x,nyd) 
-			h16(x,nyd+1)=h16(x,1 ) 
+			h1(x, 0 ,6)=h1(x,nyd,6) 
+			h1(x,nyd+1,6)=h1(x,1 ,6) 
 			
 			!-- left and right boundaries
-			h17(0  ,y)=h17(nxd,y) 
-			h17(nxd+1,y)=h17(1 ,y) 
+			h1(0  ,y,7)=h1(nxd,y,7) 
+			h1(nxd+1,y,7)=h1(1 ,y,7) 
 			!-- bottom and top boundaries
-			h17(x, 0 )=h17(x,nyd) 
-			h17(x,nyd+1)=h17(x,1 ) 
+			h1(x, 0 ,7)=h1(x,nyd,7) 
+			h1(x,nyd+1,7)=h1(x,1 ,7) 
 			
 			!-- left and right boundaries
-			h18(0  ,y)=h18(nxd,y) 
-			h18(nxd+1,y)=h18(1 ,y) 
+			h1(0  ,y,8)=h1(nxd,y,8) 
+			h1(nxd+1,y,8)=h1(1 ,y,8) 
 			!-- bottom and top boundaries
-			h18(x, 0 )=h18(x,nyd) 
-			h18(x,nyd+1)=h18(x,1 ) 
+			h1(x, 0 ,8)=h1(x,nyd,8) 
+			h1(x,nyd+1,8)=h1(x,1 ,8) 
 			
 			
 			
@@ -964,67 +961,67 @@ contains
 			
 			
 			!-- left and right boundaries
-			h20(0  ,y)=h20(nxd,y) 
-			h20(nxd+1,y)=h20(1 ,y) 
+			h2(0  ,y,0)=h2(nxd,y,0) 
+			h2(nxd+1,y,0)=h2(1 ,y,0) 
 			!-- bottom and top boundaries
-			h20(x, 0 )=h20(x,nyd) 
-			h20(x,nyd+1)=h20(x,1 ) 
+			h2(x, 0 ,0)=h2(x,nyd,0) 
+			h2(x,nyd+1,0)=h2(x,1 ,0) 
 			
 			!-- left and right boundaries
-			h21(0  ,y)=h21(nxd,y) 
-			h21(nxd+1,y)=h21(1 ,y) 
+			h2(0  ,y,1)=h2(nxd,y,1) 
+			h2(nxd+1,y,1)=h2(1 ,y,1) 
 			!-- bottom and top boundaries
-			h21(x, 0 )=h21(x,nyd) 
-			h21(x,nyd+1)=h21(x,1 ) 
+			h2(x, 0 ,1)=h2(x,nyd,1) 
+			h2(x,nyd+1,1)=h2(x,1 ,1) 
 			
 			!-- left and right boundaries
-			h22(0  ,y)=h22(nxd,y) 
-			h22(nxd+1,y)=h22(1 ,y) 
+			h2(0  ,y,2)=h2(nxd,y,2) 
+			h2(nxd+1,y,2)=h2(1 ,y,2) 
 			!-- bottom and top boundaries
-			h22(x, 0 )=h22(x,nyd) 
-			h22(x,nyd+1)=h22(x,1 ) 
+			h2(x, 0 ,2)=h2(x,nyd,2) 
+			h2(x,nyd+1,2)=h2(x,1 ,2) 
 			
 			!-- left and right boundaries
-			h23(0  ,y)=h23(nxd,y) 
-			h23(nxd+1,y)=h23(1 ,y) 
+			h2(0  ,y,3)=h2(nxd,y,3) 
+			h2(nxd+1,y,3)=h2(1 ,y,3) 
 			!-- bottom and top boundaries
-			h23(x, 0 )=h23(x,nyd) 
-			h23(x,nyd+1)=h23(x,1 ) 
+			h2(x, 0 ,3)=h2(x,nyd,3) 
+			h2(x,nyd+1,3)=h2(x,1 ,3) 
 			
 			!-- left and right boundaries
-			h24(0  ,y)=h24(nxd,y) 
-			h24(nxd+1,y)=h24(1 ,y) 
+			h2(0  ,y,4)=h2(nxd,y,4) 
+			h2(nxd+1,y,4)=h2(1 ,y,4) 
 			!-- bottom and top boundaries
-			h24(x, 0 )=h24(x,nyd) 
-			h24(x,nyd+1)=h24(x,1 ) 
+			h2(x, 0 ,4)=h2(x,nyd,4) 
+			h2(x,nyd+1,4)=h2(x,1 ,4) 
 			
 			!-- left and right boundaries
-			h25(0  ,y)=h25(nxd,y) 
-			h25(nxd+1,y)=h25(1 ,y) 
+			h2(0  ,y,5)=h2(nxd,y,5) 
+			h2(nxd+1,y,5)=h2(1 ,y,5) 
 			!-- bottom and top boundaries
-			h25(x, 0 )=h25(x,nyd) 
-			h25(x,nyd+1)=h25(x,1 ) 
+			h2(x, 0 ,5)=h2(x,nyd,5) 
+			h2(x,nyd+1,5)=h2(x,1 ,5) 
 			
 			!-- left and right boundaries
-			h26(0  ,y)=h26(nxd,y) 
-			h26(nxd+1,y)=h26(1 ,y) 
+			h2(0  ,y,6)=h2(nxd,y,6) 
+			h2(nxd+1,y,6)=h2(1 ,y,6) 
 			!-- bottom and top boundaries
-			h26(x, 0 )=h26(x,nyd) 
-			h26(x,nyd+1)=h26(x,1 ) 
+			h2(x, 0 ,6)=h2(x,nyd,6) 
+			h2(x,nyd+1,6)=h2(x,1 ,6) 
 			
 			!-- left and right boundaries
-			h27(0  ,y)=h27(nxd,y) 
-			h27(nxd+1,y)=h27(1 ,y) 
+			h2(0  ,y,7)=h2(nxd,y,7) 
+			h2(nxd+1,y,7)=h2(1 ,y,7) 
 			!-- bottom and top boundaries
-			h27(x, 0 )=h27(x,nyd) 
-			h27(x,nyd+1)=h27(x,1 ) 
+			h2(x, 0 ,7)=h2(x,nyd,7) 
+			h2(x,nyd+1,7)=h2(x,1 ,7) 
 			
 			!-- left and right boundaries
-			h28(0  ,y)=h28(nxd,y) 
-			h28(nxd+1,y)=h28(1 ,y) 
+			h2(0  ,y,8)=h2(nxd,y,8) 
+			h2(nxd+1,y,8)=h2(1 ,y,8) 
 			!-- bottom and top boundaries
-			h28(x, 0 )=h28(x,nyd) 
-			h28(x,nyd+1)=h28(x,1 ) 
+			h2(x, 0 ,8)=h2(x,nyd,8) 
+			h2(x,nyd+1,8)=h2(x,1 ,8) 
 
 			
 
@@ -1048,25 +1045,25 @@ contains
 		
 		if (x<=n(1) .and. x>=1 .and. y>=1 .and.  y<=n(2)) then
 
-			htemp11(x,y) = h11(x-ex(1),y-ey(1))
-			htemp12(x,y) = h12(x-ex(2),y-ey(2))
-			htemp13(x,y) = h13(x-ex(3),y-ey(3))
-			htemp14(x,y) = h14(x-ex(4),y-ey(4))
-			htemp15(x,y) = h15(x-ex(5),y-ey(5))
-			htemp16(x,y) = h16(x-ex(6),y-ey(6))
-			htemp17(x,y) = h17(x-ex(7),y-ey(7))
-			htemp18(x,y) = h18(x-ex(8),y-ey(8))
+			htemp11(x,y) = h1(x-ex(1),y-ey(1),1)
+			htemp12(x,y) = h1(x-ex(2),y-ey(2),2)
+			htemp13(x,y) = h1(x-ex(3),y-ey(3),3)
+			htemp14(x,y) = h1(x-ex(4),y-ey(4),4)
+			htemp15(x,y) = h1(x-ex(5),y-ey(5),5)
+			htemp16(x,y) = h1(x-ex(6),y-ey(6),6)
+			htemp17(x,y) = h1(x-ex(7),y-ey(7),7)
+			htemp18(x,y) = h1(x-ex(8),y-ey(8),8)
 			
 			
 			
-			htemp21(x,y) = h21(x-ex(1),y-ey(1))
-			htemp22(x,y) = h22(x-ex(2),y-ey(2))
-			htemp23(x,y) = h23(x-ex(3),y-ey(3))
-			htemp24(x,y) = h24(x-ex(4),y-ey(4))
-			htemp25(x,y) = h25(x-ex(5),y-ey(5))
-			htemp26(x,y) = h26(x-ex(6),y-ey(6))
-			htemp27(x,y) = h27(x-ex(7),y-ey(7))
-			htemp28(x,y) = h28(x-ex(8),y-ey(8))
+			htemp21(x,y) = h2(x-ex(1),y-ey(1),1)
+			htemp22(x,y) = h2(x-ex(2),y-ey(2),2)
+			htemp23(x,y) = h2(x-ex(3),y-ey(3),3)
+			htemp24(x,y) = h2(x-ex(4),y-ey(4),4)
+			htemp25(x,y) = h2(x-ex(5),y-ey(5),5)
+			htemp26(x,y) = h2(x-ex(6),y-ey(6),6)
+			htemp27(x,y) = h2(x-ex(7),y-ey(7),7)
+			htemp28(x,y) = h2(x-ex(8),y-ey(8),8)
 					
 					
 			
@@ -1094,25 +1091,25 @@ contains
 
 				
 										
-			h11(x,y) = htemp11(x,y)
-			h12(x,y) = htemp12(x,y)
-			h13(x,y) = htemp13(x,y)
-			h14(x,y) = htemp14(x,y)
-			h15(x,y) = htemp15(x,y)
-			h16(x,y) = htemp16(x,y)
-			h17(x,y) = htemp17(x,y)
-			h18(x,y) = htemp18(x,y)
+			h1(x,y,1) = htemp11(x,y)
+			h1(x,y,2) = htemp12(x,y)
+			h1(x,y,3) = htemp13(x,y)
+			h1(x,y,4) = htemp14(x,y)
+			h1(x,y,5) = htemp15(x,y)
+			h1(x,y,6) = htemp16(x,y)
+			h1(x,y,7) = htemp17(x,y)
+			h1(x,y,8) = htemp18(x,y)
 			
 			
 			
-			h21(x,y) = htemp21(x,y)
-			h22(x,y) = htemp22(x,y)
-			h23(x,y) = htemp23(x,y)
-			h24(x,y) = htemp24(x,y)
-			h25(x,y) = htemp25(x,y)
-			h26(x,y) = htemp26(x,y)
-			h27(x,y) = htemp27(x,y)
-			h28(x,y) = htemp28(x,y)
+			h2(x,y,1) = htemp21(x,y)
+			h2(x,y,2) = htemp22(x,y)
+			h2(x,y,3) = htemp23(x,y)
+			h2(x,y,4) = htemp24(x,y)
+			h2(x,y,5) = htemp25(x,y)
+			h2(x,y,6) = htemp26(x,y)
+			h2(x,y,7) = htemp27(x,y)
+			h2(x,y,8) = htemp28(x,y)
 										
 			
 				
@@ -1125,8 +1122,7 @@ contains
 	
 	attributes(global) subroutine propagation_g
 		use precision_m
-		use device_var, only : nxd, nyd, ux, ex, ey, gtemp1, gtemp2, gtemp3, gtemp4, gtemp5, gtemp6, gtemp7, gtemp8, &
-		g1, g2, g3, g4, g5, g6, g7, g8
+		use device_var, only : nxd, nyd, ux, ex, ey, gtemp1, gtemp2, gtemp3, gtemp4, gtemp5, gtemp6, gtemp7, gtemp8, g
 		implicit none
 		integer :: x, y, n(3)
 		
@@ -1141,14 +1137,14 @@ contains
 
 			
 
-			gtemp1(x,y) = g1(x-ex(1),y-ey(1))
-			gtemp2(x,y) = g2(x-ex(2),y-ey(2))
-			gtemp3(x,y) = g3(x-ex(3),y-ey(3))
-			gtemp4(x,y) = g4(x-ex(4),y-ey(4))
-			gtemp5(x,y) = g5(x-ex(5),y-ey(5))
-			gtemp6(x,y) = g6(x-ex(6),y-ey(6))
-			gtemp7(x,y) = g7(x-ex(7),y-ey(7))
-			gtemp8(x,y) = g8(x-ex(8),y-ey(8))
+			gtemp1(x,y) = g(x-ex(1),y-ey(1),1)
+			gtemp2(x,y) = g(x-ex(2),y-ey(2),2)
+			gtemp3(x,y) = g(x-ex(3),y-ey(3),3)
+			gtemp4(x,y) = g(x-ex(4),y-ey(4),4)
+			gtemp5(x,y) = g(x-ex(5),y-ey(5),5)
+			gtemp6(x,y) = g(x-ex(6),y-ey(6),6)
+			gtemp7(x,y) = g(x-ex(7),y-ey(7),7)
+			gtemp8(x,y) = g(x-ex(8),y-ey(8),8)
 			
 				
 				
@@ -1162,8 +1158,7 @@ contains
 	
 	attributes(global) subroutine propagation_g2
 		use precision_m
-		use device_var, only : nxd, nyd, ux, ex, ey, gtemp1, gtemp2, gtemp3, gtemp4, gtemp5, gtemp6, gtemp7, gtemp8, &
-		g1, g2, g3, g4, g5, g6, g7, g8
+		use device_var, only : nxd, nyd, ux, ex, ey, gtemp1, gtemp2, gtemp3, gtemp4, gtemp5, gtemp6, gtemp7, gtemp8, g
 		implicit none
 		!real(fp_kind), intent(inout) :: g(0:8,0:nxd+1,0:nyd+1)
 		!real(fp_kind) :: gnew(8,nxd,nyd)
@@ -1181,14 +1176,14 @@ contains
 			
 
 			
-			g1(x,y) =gtemp1(x,y)
-			g2(x,y) =gtemp2(x,y)
-			g3(x,y) =gtemp3(x,y)
-			g4(x,y) =gtemp4(x,y)
-			g5(x,y) =gtemp5(x,y)
-			g6(x,y) =gtemp6(x,y)
-			g7(x,y) =gtemp7(x,y)
-			g8(x,y) =gtemp8(x,y)
+			g(x,y,1) =gtemp1(x,y)
+			g(x,y,2) =gtemp2(x,y)
+			g(x,y,3) =gtemp3(x,y)
+			g(x,y,4) =gtemp4(x,y)
+			g(x,y,5) =gtemp5(x,y)
+			g(x,y,6) =gtemp6(x,y)
+			g(x,y,7) =gtemp7(x,y)
+			g(x,y,8) =gtemp8(x,y)
 				
 										
 										

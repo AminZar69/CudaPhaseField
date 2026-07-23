@@ -50,9 +50,10 @@ module host_var
 	real(fp_kind), dimension(0:8) :: gammahost, geqhost
 	real(fp_kind), dimension(3) :: tmphost, ri
 	
-	real(fp_kind), dimension(0:nx+1,0:ny+1) :: h10_host, h11_host, h12_host, h13_host, h14_host, h15_host, h16_host, h17_host, h18_host
-	real(fp_kind), dimension(0:nx+1,0:ny+1) :: h20_host, h21_host, h22_host, h23_host, h24_host, h25_host, h26_host, h27_host, h28_host
-	real(fp_kind), dimension(0:nx+1,0:ny+1) ::  g0_host, g1_host, g2_host, g3_host, g4_host, g5_host, g6_host, g7_host, g8_host
+
+	real(fp_kind), dimension(0:nx+1,0:ny+1,0:8) :: h1_host
+	real(fp_kind), dimension(0:nx+1,0:ny+1,0:8) :: h2_host
+	real(fp_kind), dimension(0:nx+1,0:ny+1,0:8) :: g_host
 	real(fp_kind), dimension(0:nx+1,0:ny+1) :: phi1_host, phi2_host, phi3_host
 	real(fp_kind), dimension(nx,ny) :: phost, rhohost, uxhost, uyhost
 	

@@ -65,37 +65,10 @@ program main
 	do t = 0, tf
 			
 				
-		h10 = h10_host
-		h11 = h11_host
-		h12 = h12_host
-		h13 = h13_host
-		h14 = h14_host
-		h15 = h15_host
-		h16 = h16_host
-		h17 = h17_host
-		h18 = h18_host
-		
-		h20 = h20_host
-		h21 = h21_host
-		h22 = h22_host
-		h23 = h23_host
-		h24 = h24_host
-		h25 = h25_host
-		h26 = h26_host
-		h27 = h27_host
-		h28 = h28_host
-		
-		g0 = g0_host
-		g1 = g1_host
-		g2 = g2_host
-		g3 = g3_host
-		g4 = g4_host
-		g5 = g5_host
-		g6 = g6_host
-		g7 = g7_host
-		g8 = g8_host
-		
-		
+
+		h1 = h1_host
+		h2 = h2_host
+		g  = g_host
 		
 		
 		call phi_cal<<<grid,tblock>>>
@@ -119,36 +92,9 @@ program main
 
 		
 		
-		h10_host = h10
-		h11_host = h11
-		h12_host = h12
-		h13_host = h13
-		h14_host = h14
-		h15_host = h15
-		h16_host = h16
-		h17_host = h17
-		h18_host = h18
-		
-		h20_host = h20
-		h21_host = h21
-		h22_host = h22
-		h23_host = h23
-		h24_host = h24
-		h25_host = h25
-		h26_host = h26
-		h27_host = h27
-		h28_host = h28
-		
-		
-		g0_host = g0
-		g1_host = g1
-		g2_host = g2
-		g3_host = g3
-		g4_host = g4
-		g5_host = g5
-		g6_host = g6
-		g7_host = g7
-		g8_host = g8
+		h1_host = h1
+		h2_host = h2
+		g_host  = g
 		
 		
 		
