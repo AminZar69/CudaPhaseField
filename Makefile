@@ -1,7 +1,10 @@
 project := phasefield
 cc := nvfortran
 # -cuda enables CUDA Fortran (this nvfortran version has retired -Mcuda in favor
-# of -cuda + -gpu=...).
+# of -cuda + -gpu=...). With a .cuf extension nvfortran used to enable CUDA
+# Fortran automatically; since these files are now plain .f90 (so editors/GitHub
+# recognize them as Fortran), -cuda must be passed explicitly on every compile
+# step that contains CUDA Fortran code, not just at link time.
 #
 # This target GPU is a Quadro P4000 (Pascal, compute capability 6.1). This specific
 # HPC SDK 26.5 install only bundles CUDA 13.2 (check with:
@@ -38,20 +41,20 @@ $(project): $(objects)
 $(objdir)/precision_m.o: $(srcdir)/precision_m.f90
 	$(cc) -c $(srcdir)/precision_m.f90 -o $(objdir)/precision_m.o 
 	
-$(objdir)/host_var.o: $(srcdir)/host_var.cuf
-	$(cc) $(cudaflags) -c $(srcdir)/host_var.cuf -o $(objdir)/host_var.o
+$(objdir)/host_var.o: $(srcdir)/host_var.f90
+	$(cc) $(cudaflags) -c $(srcdir)/host_var.f90 -o $(objdir)/host_var.o
 	
-$(objdir)/device_var.o: $(srcdir)/device_var.cuf
-	$(cc) $(cudaflags) -c $(srcdir)/device_var.cuf -o $(objdir)/device_var.o
+$(objdir)/device_var.o: $(srcdir)/device_var.f90
+	$(cc) $(cudaflags) -c $(srcdir)/device_var.f90 -o $(objdir)/device_var.o
 	
-$(objdir)/host_subroutines.o: $(srcdir)/host_subroutines.cuf
-	$(cc) $(cudaflags) -c $(srcdir)/host_subroutines.cuf -o $(objdir)/host_subroutines.o
+$(objdir)/host_subroutines.o: $(srcdir)/host_subroutines.f90
+	$(cc) $(cudaflags) -c $(srcdir)/host_subroutines.f90 -o $(objdir)/host_subroutines.o
 	
-$(objdir)/global_subroutines.o: $(srcdir)/global_subroutines.cuf
-	$(cc) $(cudaflags) -c $(srcdir)/global_subroutines.cuf -o $(objdir)/global_subroutines.o
+$(objdir)/global_subroutines.o: $(srcdir)/global_subroutines.f90
+	$(cc) $(cudaflags) -c $(srcdir)/global_subroutines.f90 -o $(objdir)/global_subroutines.o
 	
-$(objdir)/main.o: $(srcdir)/main.cuf
-	$(cc) $(cudaflags) -c $(srcdir)/main.cuf -o $(objdir)/main.o 
+$(objdir)/main.o: $(srcdir)/main.f90
+	$(cc) $(cudaflags) -c $(srcdir)/main.f90 -o $(objdir)/main.o 
 ########
 	
 clean:	
