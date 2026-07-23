@@ -46,8 +46,9 @@ module device_var
 	
 
 	
-	real(fp_kind),device, dimension(0:nxd+1,0:nyd+1) :: h10, h11, h12, h13, h14, h15, h16, h17, h18
-	real(fp_kind),device, dimension(0:nxd+1,0:nyd+1) :: h20, h21, h22, h23, h24, h25, h26, h27, h28
+
+	real(fp_kind),device, dimension(0:nxd+1,0:nyd+1,0:8) :: h1
+	real(fp_kind),device, dimension(0:nxd+1,0:nyd+1,0:8) :: h2
 	real(fp_kind),device, dimension(nxd,nyd) :: htemp11, htemp12, htemp13, htemp14, htemp15, htemp16, htemp17, htemp18
 	real(fp_kind),device, dimension(nxd,nyd) :: htemp21, htemp22, htemp23, htemp24, htemp25, htemp26, htemp27, htemp28
 	real(fp_kind),device, dimension(nxd,nyd) :: hlph10, hlph11, hlph12, hlph13, hlph14, hlph15, hlph16, hlph17, hlph18
@@ -63,7 +64,8 @@ module device_var
 	real(fp_kind),device, dimension(nxd,nyd) :: gamma0, gamma1, gamma2, gamma3, gamma4, gamma5, gamma6, gamma7, gamma8
 	real(fp_kind),device, dimension(nxd,nyd) :: eu0, eu1, eu2, eu3, eu4, eu5, eu6, eu7, eu8, mu1, mu2, mu3
 	
-	real(fp_kind),device, dimension(0:nxd+1,0:nyd+1) :: g0, g1, g2, g3, g4, g5, g6, g7, g8
+	! g(:,:,i), i=0..8: the 9 D2Q9 pressure-population values, same layout rationale as h1/h2.
+	real(fp_kind),device, dimension(0:nxd+1,0:nyd+1,0:8) :: g
 	real(fp_kind),device, dimension(nxd,nyd) :: gtemp1, gtemp2, gtemp3, gtemp4, gtemp5, gtemp6, gtemp7, gtemp8
 	real(fp_kind),device, dimension(nxd,nyd) :: hlpg0, hlpg1, hlpg2, hlpg3, hlpg4, hlpg5, hlpg6, hlpg7, hlpg8
 	real(fp_kind),device, dimension(nxd,nyd) :: ef0, ef1, ef2, ef3, ef4, ef5, ef6, ef7, ef8

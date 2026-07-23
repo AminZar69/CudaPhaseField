@@ -6,6 +6,8 @@ populations are defined in a way to preserve the device memory usage in a coales
 manner. 	
 ### Requirements
 The nvfortran compiler along with the cuda toolkits needs to be installed to be able to run this package. For more information regarding the nvfortran installation, we kindly refer to the following link <https://docs.nvidia.com/hpc-sdk/index.html>. Moreover, since the CUDA API is utilised, an NVIDIA GPU is required to execute the device kernels on. The output files are generated in the ascii VTK format readable by the paraview which is an open-source visualisation package found via <https://www.paraview.org/download/>.
+
+**Note on the Makefile:** the `-gpu=` and `NVHPC_CUDA_HOME` settings in the Makefile are currently pinned to `cc61` (compute capability 6.1 / Pascal) and a CUDA 12.2 toolkit, matching the GPU this was last built and tested on. If you're running on a different GPU, adjust `-gpu=ccXY` in the Makefile to match your card's compute capability (check with `nvaccelinfo`), and update `NVHPC_CUDA_HOME` to point at a CUDA toolkit version your HPC SDK install and driver actually support.
 ### Build and execution
     make clean
     make
@@ -50,6 +52,3 @@ Note that the simulation parameters in the host_var and device_var modules need 
     real(fp_kind), constant, parameter :: landat = 3. / ((1. / landa(1)) &
         + (1. / landa(2)) + (1. / landa(3)))
     real(fp_kind), constant,parameter :: w = 4.
-    
-
-
