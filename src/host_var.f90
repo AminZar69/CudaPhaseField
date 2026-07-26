@@ -21,7 +21,7 @@ module host_var
     use precision_m
     implicit none
     integer :: t, x, y
-    integer,parameter :: tf   = 160000
+    integer,parameter :: tf   = 5000
     integer,parameter :: step = 8000
     integer,parameter :: nx = 1022
     integer,parameter :: ny = 1022

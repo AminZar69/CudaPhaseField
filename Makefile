@@ -23,12 +23,47 @@ cc := nvfortran
 # Fill in the actual install path below once CUDA 12.2 is installed, e.g.
 # /usr/local/cuda-12.2 (or wherever your installer put it).
 export NVHPC_CUDA_HOME := /usr/local/cuda-12.2
-cudaflags := -cuda -gpu=cc61
-ldflags := -cuda -gpu=cc61
+gpu_target := cc61
+
+# ---- Build mode -------------------------------------------------------------
+# Usage: make               -> release (default)
+#        make BUILD=debug   -> debug
+#        make BUILD=release -> release, explicitly
+#
+# release: optimized, no debug info, no runtime checks -- for actual runs.
+# debug:   unoptimized, host + device debug info, array-bounds and pointer
+#          checks on -- for tracking down crashes/wrong-answers with
+#          cuda-gdb or a plain debugger. Notably slower to run.
+BUILD ?= release
+
 srcdir := src
-objdir := obj
+# Object files (and, via -module below, .mod files) are kept per-build-mode
+# (obj/release, obj/debug) so switching between `make` and `make BUILD=debug`
+# never links stale objects built with different flags, and .mod files from one
+# mode never get picked up while compiling the other. This also keeps .mod files
+# out of the project root entirely. The final binary always lands at
+# bin/phasefield either way, so `cd bin && ./phasefield` keeps working regardless
+# of which mode produced it.
+objdir := obj/$(BUILD)
 bindir := bin
+
+ifeq ($(BUILD),debug)
+	optflags := -O0 -g -Mbounds -Mchkptr -traceback
+	gpu_extra := ,debug,lineinfo
+else ifeq ($(BUILD),release)
+	optflags := -O3 -fast
+	gpu_extra :=
+else
+	$(error Unknown BUILD '$(BUILD)' -- use BUILD=release or BUILD=debug)
+endif
+
+cudaflags := -cuda -gpu=$(gpu_target)$(gpu_extra) $(optflags) -module $(objdir)
+ldflags := -cuda -gpu=$(gpu_target)$(gpu_extra) $(optflags)
+# -------------------------------------------------------------------------------
+
 objects	:= $(objdir)/precision_m.o $(objdir)/host_var.o $(objdir)/device_var.o $(objdir)/host_subroutines.o $(objdir)/global_subroutines.o $(objdir)/main.o 
+
+$(shell mkdir -p $(objdir) $(bindir))
 
 all: $(project)
 
@@ -38,8 +73,10 @@ $(project): $(objects)
 	
 ####Compilation####	
 # precision_m.f90 is plain Fortran (no CUDA Fortran syntax), so no CUDA flags needed here.
+# It still gets -O0/-O3 from optflags so debug builds aren't optimizing this file
+# away from being steppable either.
 $(objdir)/precision_m.o: $(srcdir)/precision_m.f90
-	$(cc) -c $(srcdir)/precision_m.f90 -o $(objdir)/precision_m.o 
+	$(cc) $(optflags) -module $(objdir) -c $(srcdir)/precision_m.f90 -o $(objdir)/precision_m.o 
 	
 $(objdir)/host_var.o: $(srcdir)/host_var.f90
 	$(cc) $(cudaflags) -c $(srcdir)/host_var.f90 -o $(objdir)/host_var.o
@@ -59,5 +96,5 @@ $(objdir)/main.o: $(srcdir)/main.f90
 	
 clean:	
 	rm -rf *mod 
-	rm -f $(objdir)/*
+	rm -rf obj
 	rm -f $(bindir)/*
