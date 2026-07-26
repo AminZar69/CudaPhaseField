@@ -97,23 +97,91 @@ contains
 	use device_var, only : nxd, nyd, phi1, phi2, phi3, dphi1dx, dphi2dx, dphi3dx, dphi1dy, dphi2dy, dphi3dy
 	implicit none
 	
-	integer :: x, y, n(2)
+	! TILE must match the thread-block dimensions this kernel is launched with
+	! (tblock = dim3(32,32,1) in main.f90). Shared-memory arrays need compile-time
+	! constant extents, so this can't just read blockDim%x -- if the launch
+	! configuration in main.f90 ever changes, update TILE here to match.
+	integer, parameter :: TILE = 32
+	
+	! One tile per phase, padded with a 1-cell halo ring on every side (indices
+	! 0 and TILE+1) so each thread's 8-neighbor stencil can be read entirely from
+	! shared memory after the load, with no further global-memory traffic.
+	real(fp_kind), shared :: s_phi1(0:TILE+1, 0:TILE+1)
+	real(fp_kind), shared :: s_phi2(0:TILE+1, 0:TILE+1)
+	real(fp_kind), shared :: s_phi3(0:TILE+1, 0:TILE+1)
+	
+	integer :: x, y, tx, ty
 	x = (blockIdx%x-1)*blockDim%x + threadIdx%x
 	y = (blockIdx%y-1)*blockDim%y + threadIdx%y
-	n(1) = nxd
-	n(2) = nyd
+	tx = threadIdx%x
+	ty = threadIdx%y
 	
-	if (x<=n(1) .and. x>=1 .and. y>=1 .and.  y<=n(2)) then
+	! Guarded against the *array's* valid bounds (0:nxd+1), not just the interior
+	! range this kernel computes over (1:nxd) -- nxd+1 is still a legal index (the
+	! periodic halo cell written by periodic_phi), and it must be loadable so the
+	! interior thread one column/row in from a block edge can read it as a neighbor.
+	! This also correctly skips the kernel's one extra dummy row/column of threads
+	! (grid*block = 1024 covers array indices 0:1023, but nxd+1 = 1023 is the last
+	! valid index, so thread index 1024 has nothing valid to load).
+	if (x<=nxd+1 .and. y<=nyd+1) then
+		s_phi1(tx,ty) = phi1(x,y)
+		s_phi2(tx,ty) = phi2(x,y)
+		s_phi3(tx,ty) = phi3(x,y)
+		
+		if (tx==1) then
+			s_phi1(0,ty) = phi1(x-1,y)
+			s_phi2(0,ty) = phi2(x-1,y)
+			s_phi3(0,ty) = phi3(x-1,y)
+		end if
+		if (tx==TILE) then
+			s_phi1(TILE+1,ty) = phi1(x+1,y)
+			s_phi2(TILE+1,ty) = phi2(x+1,y)
+			s_phi3(TILE+1,ty) = phi3(x+1,y)
+		end if
+		if (ty==1) then
+			s_phi1(tx,0) = phi1(x,y-1)
+			s_phi2(tx,0) = phi2(x,y-1)
+			s_phi3(tx,0) = phi3(x,y-1)
+		end if
+		if (ty==TILE) then
+			s_phi1(tx,TILE+1) = phi1(x,y+1)
+			s_phi2(tx,TILE+1) = phi2(x,y+1)
+			s_phi3(tx,TILE+1) = phi3(x,y+1)
+		end if
+		if (tx==1 .and. ty==1) then
+			s_phi1(0,0) = phi1(x-1,y-1)
+			s_phi2(0,0) = phi2(x-1,y-1)
+			s_phi3(0,0) = phi3(x-1,y-1)
+		end if
+		if (tx==TILE .and. ty==1) then
+			s_phi1(TILE+1,0) = phi1(x+1,y-1)
+			s_phi2(TILE+1,0) = phi2(x+1,y-1)
+			s_phi3(TILE+1,0) = phi3(x+1,y-1)
+		end if
+		if (tx==1 .and. ty==TILE) then
+			s_phi1(0,TILE+1) = phi1(x-1,y+1)
+			s_phi2(0,TILE+1) = phi2(x-1,y+1)
+			s_phi3(0,TILE+1) = phi3(x-1,y+1)
+		end if
+		if (tx==TILE .and. ty==TILE) then
+			s_phi1(TILE+1,TILE+1) = phi1(x+1,y+1)
+			s_phi2(TILE+1,TILE+1) = phi2(x+1,y+1)
+			s_phi3(TILE+1,TILE+1) = phi3(x+1,y+1)
+		end if
+	end if
 	
+	call syncthreads()
+	
+	if (x<=nxd .and. x>=1 .and. y>=1 .and.  y<=nyd) then
+	
+		dphi1dx(x,y) = (s_phi1(tx+1,ty) - s_phi1(tx-1,ty))/3. + ( s_phi1(tx+1,ty-1) + s_phi1(tx+1,ty+1) - s_phi1(tx-1,ty-1) - s_phi1(tx-1,ty+1))/12.
+		dphi1dy(x,y) = (s_phi1(tx,ty+1) - s_phi1(tx,ty-1))/3. + ( s_phi1(tx-1,ty+1) + s_phi1(tx+1,ty+1) - s_phi1(tx-1,ty-1) - s_phi1(tx+1,ty-1))/12.
 		
-		dphi1dx(x,y) = (phi1(x+1,y) - phi1(x-1,y))/3. + ( phi1(x+1,y-1) + phi1(x+1,y+1) - phi1(x-1,y-1) - phi1(x-1,y+1))/12.
-		dphi1dy(x,y) = (phi1(x,y+1) - phi1(x,y-1))/3. + ( phi1(x-1,y+1) + phi1(x+1,y+1) - phi1(x-1,y-1) - phi1(x+1,y-1))/12.
+		dphi2dx(x,y) = (s_phi2(tx+1,ty) - s_phi2(tx-1,ty))/3. + ( s_phi2(tx+1,ty-1) + s_phi2(tx+1,ty+1) - s_phi2(tx-1,ty-1) - s_phi2(tx-1,ty+1))/12.
+		dphi2dy(x,y) = (s_phi2(tx,ty+1) - s_phi2(tx,ty-1))/3. + ( s_phi2(tx-1,ty+1) + s_phi2(tx+1,ty+1) - s_phi2(tx-1,ty-1) - s_phi2(tx+1,ty-1))/12.
 		
-		dphi2dx(x,y) = (phi2(x+1,y) - phi2(x-1,y))/3. + ( phi2(x+1,y-1) + phi2(x+1,y+1) - phi2(x-1,y-1) - phi2(x-1,y+1))/12.
-		dphi2dy(x,y) = (phi2(x,y+1) - phi2(x,y-1))/3. + ( phi2(x-1,y+1) + phi2(x+1,y+1) - phi2(x-1,y-1) - phi2(x+1,y-1))/12.
-		
-		dphi3dx(x,y) = (phi3(x+1,y) - phi3(x-1,y))/3. + ( phi3(x+1,y-1) + phi3(x+1,y+1) - phi3(x-1,y-1) - phi3(x-1,y+1))/12.
-		dphi3dy(x,y) = (phi3(x,y+1) - phi3(x,y-1))/3. + ( phi3(x-1,y+1) + phi3(x+1,y+1) - phi3(x-1,y-1) - phi3(x+1,y-1))/12.
+		dphi3dx(x,y) = (s_phi3(tx+1,ty) - s_phi3(tx-1,ty))/3. + ( s_phi3(tx+1,ty-1) + s_phi3(tx+1,ty+1) - s_phi3(tx-1,ty-1) - s_phi3(tx-1,ty+1))/12.
+		dphi3dy(x,y) = (s_phi3(tx,ty+1) - s_phi3(tx,ty-1))/3. + ( s_phi3(tx-1,ty+1) + s_phi3(tx+1,ty+1) - s_phi3(tx-1,ty-1) - s_phi3(tx+1,ty-1))/12.
 	
 		
 	end if
@@ -181,35 +249,93 @@ contains
 		use device_var, only : nxd, nyd, landa, w, landat, d2phi1, d2phi2, d2phi3, phi1, phi2, phi3, mu1, mu2, mu3
 		implicit none
 		
-		integer :: x, y, n(2)
+		! Same tiling pattern as gradient_cal: this kernel's Laplacian needs the
+		! same 8-neighbor stencil (plus the center point, already needed for mu1/2/3
+		! anyway), so it gets the identical shared-memory treatment. See gradient_cal
+		! for the detailed reasoning on the load-guard bounds.
+		integer, parameter :: TILE = 32
+		real(fp_kind), shared :: s_phi1(0:TILE+1, 0:TILE+1)
+		real(fp_kind), shared :: s_phi2(0:TILE+1, 0:TILE+1)
+		real(fp_kind), shared :: s_phi3(0:TILE+1, 0:TILE+1)
+		
+		integer :: x, y, tx, ty
 		x = (blockIdx%x-1)*blockDim%x + threadIdx%x
 		y = (blockIdx%y-1)*blockDim%y + threadIdx%y
-		n(1) = nxd
-		n(2) = nyd
-	
-		if (x<=n(1) .and. x>=1 .and. y>=1 .and.  y<=n(2)) then
+		tx = threadIdx%x
+		ty = threadIdx%y
+		
+		if (x<=nxd+1 .and. y<=nyd+1) then
+			s_phi1(tx,ty) = phi1(x,y)
+			s_phi2(tx,ty) = phi2(x,y)
+			s_phi3(tx,ty) = phi3(x,y)
 			
-			d2phi1(x,y) = ( phi1(x-1,y-1)+phi1(x+1,y-1)+phi1(x-1,y+1)+phi1(x+1,y+1) &
-				+4.*(phi1(x,y-1)+phi1(x-1,y)+phi1(x+1,y)+phi1(x,y+1)) - 20.*phi1(x,y) )/6.
+			if (tx==1) then
+				s_phi1(0,ty) = phi1(x-1,y)
+				s_phi2(0,ty) = phi2(x-1,y)
+				s_phi3(0,ty) = phi3(x-1,y)
+			end if
+			if (tx==TILE) then
+				s_phi1(TILE+1,ty) = phi1(x+1,y)
+				s_phi2(TILE+1,ty) = phi2(x+1,y)
+				s_phi3(TILE+1,ty) = phi3(x+1,y)
+			end if
+			if (ty==1) then
+				s_phi1(tx,0) = phi1(x,y-1)
+				s_phi2(tx,0) = phi2(x,y-1)
+				s_phi3(tx,0) = phi3(x,y-1)
+			end if
+			if (ty==TILE) then
+				s_phi1(tx,TILE+1) = phi1(x,y+1)
+				s_phi2(tx,TILE+1) = phi2(x,y+1)
+				s_phi3(tx,TILE+1) = phi3(x,y+1)
+			end if
+			if (tx==1 .and. ty==1) then
+				s_phi1(0,0) = phi1(x-1,y-1)
+				s_phi2(0,0) = phi2(x-1,y-1)
+				s_phi3(0,0) = phi3(x-1,y-1)
+			end if
+			if (tx==TILE .and. ty==1) then
+				s_phi1(TILE+1,0) = phi1(x+1,y-1)
+				s_phi2(TILE+1,0) = phi2(x+1,y-1)
+				s_phi3(TILE+1,0) = phi3(x+1,y-1)
+			end if
+			if (tx==1 .and. ty==TILE) then
+				s_phi1(0,TILE+1) = phi1(x-1,y+1)
+				s_phi2(0,TILE+1) = phi2(x-1,y+1)
+				s_phi3(0,TILE+1) = phi3(x-1,y+1)
+			end if
+			if (tx==TILE .and. ty==TILE) then
+				s_phi1(TILE+1,TILE+1) = phi1(x+1,y+1)
+				s_phi2(TILE+1,TILE+1) = phi2(x+1,y+1)
+				s_phi3(TILE+1,TILE+1) = phi3(x+1,y+1)
+			end if
+		end if
+		
+		call syncthreads()
+		
+		if (x<=nxd .and. x>=1 .and. y>=1 .and.  y<=nyd) then
+			
+			d2phi1(x,y) = ( s_phi1(tx-1,ty-1)+s_phi1(tx+1,ty-1)+s_phi1(tx-1,ty+1)+s_phi1(tx+1,ty+1) &
+				+4.*(s_phi1(tx,ty-1)+s_phi1(tx-1,ty)+s_phi1(tx+1,ty)+s_phi1(tx,ty+1)) - 20.*s_phi1(tx,ty) )/6.
 				
-			d2phi2(x,y) = ( phi2(x-1,y-1)+phi2(x+1,y-1)+phi2(x-1,y+1)+phi2(x+1,y+1) &
-				+4.*(phi2(x,y-1)+phi2(x-1,y)+phi2(x+1,y)+phi2(x,y+1)) - 20.*phi2(x,y) )/6.
+			d2phi2(x,y) = ( s_phi2(tx-1,ty-1)+s_phi2(tx+1,ty-1)+s_phi2(tx-1,ty+1)+s_phi2(tx+1,ty+1) &
+				+4.*(s_phi2(tx,ty-1)+s_phi2(tx-1,ty)+s_phi2(tx+1,ty)+s_phi2(tx,ty+1)) - 20.*s_phi2(tx,ty) )/6.
 				
-			d2phi3(x,y) = ( phi3(x-1,y-1)+phi3(x+1,y-1)+phi3(x-1,y+1)+phi3(x+1,y+1) &
-				+4.*(phi3(x,y-1)+phi3(x-1,y)+phi3(x+1,y)+phi3(x,y+1)) - 20.*phi3(x,y) )/6.
+			d2phi3(x,y) = ( s_phi3(tx-1,ty-1)+s_phi3(tx+1,ty-1)+s_phi3(tx-1,ty+1)+s_phi3(tx+1,ty+1) &
+				+4.*(s_phi3(tx,ty-1)+s_phi3(tx-1,ty)+s_phi3(tx+1,ty)+s_phi3(tx,ty+1)) - 20.*s_phi3(tx,ty) )/6.
 			
 		
 			
-			mu1(x,y) = (12. / w) * (landa(1) * phi1(x,y) * (1.- phi1(x,y)) * (1. - 2. * phi1(x,y))  &
-				- 2. * landat * phi1(x,y) * phi2(x,y) * (1. - phi1(x,y) - phi2(x,y))) &
+			mu1(x,y) = (12. / w) * (landa(1) * s_phi1(tx,ty) * (1.- s_phi1(tx,ty)) * (1. - 2. * s_phi1(tx,ty))  &
+				- 2. * landat * s_phi1(tx,ty) * s_phi2(tx,ty) * (1. - s_phi1(tx,ty) - s_phi2(tx,ty))) &
 					- (3. / 4.) * w * landa(1) * d2phi1(x,y) 
 					
-			mu2(x,y) = (12. / w) * (landa(2) * phi2(x,y) * (1.- phi2(x,y)) * (1. - 2. * phi2(x,y))  &
-				- 2. * landat * phi1(x,y) * phi2(x,y) * (1. - phi1(x,y) - phi2(x,y))) &
+			mu2(x,y) = (12. / w) * (landa(2) * s_phi2(tx,ty) * (1.- s_phi2(tx,ty)) * (1. - 2. * s_phi2(tx,ty))  &
+				- 2. * landat * s_phi1(tx,ty) * s_phi2(tx,ty) * (1. - s_phi1(tx,ty) - s_phi2(tx,ty))) &
 					- (3. / 4.) * w * landa(2) * d2phi2(x,y) 
 					
-			mu3(x,y) = (12. / w) * (landa(3) * phi3(x,y) * (1.- phi3(x,y)) * (1. - 2. * phi3(x,y))  &
-				- 2. * landat * phi1(x,y) * phi2(x,y) * (1. - phi1(x,y) - phi2(x,y))) &
+			mu3(x,y) = (12. / w) * (landa(3) * s_phi3(tx,ty) * (1.- s_phi3(tx,ty)) * (1. - 2. * s_phi3(tx,ty))  &
+				- 2. * landat * s_phi1(tx,ty) * s_phi2(tx,ty) * (1. - s_phi1(tx,ty) - s_phi2(tx,ty))) &
 					- (3. / 4.) * w * landa(3) * d2phi3(x,y) 
 					
 			
