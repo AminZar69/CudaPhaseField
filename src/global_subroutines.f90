@@ -40,7 +40,7 @@ contains
 				
 				!call syncthreads()
 					
-				phi3(x,y) = 1. - phi1(x,y) - phi2(x,y)
+				phi3(x,y) = 1._fp_kind - phi1(x,y) - phi2(x,y)
 				
 				!call syncthreads()
 				
@@ -174,14 +174,14 @@ contains
 	
 	if (x<=nxd .and. x>=1 .and. y>=1 .and.  y<=nyd) then
 	
-		dphi1dx(x,y) = (s_phi1(tx+1,ty) - s_phi1(tx-1,ty))/3. + ( s_phi1(tx+1,ty-1) + s_phi1(tx+1,ty+1) - s_phi1(tx-1,ty-1) - s_phi1(tx-1,ty+1))/12.
-		dphi1dy(x,y) = (s_phi1(tx,ty+1) - s_phi1(tx,ty-1))/3. + ( s_phi1(tx-1,ty+1) + s_phi1(tx+1,ty+1) - s_phi1(tx-1,ty-1) - s_phi1(tx+1,ty-1))/12.
+		dphi1dx(x,y) = (s_phi1(tx+1,ty) - s_phi1(tx-1,ty))/3._fp_kind + ( s_phi1(tx+1,ty-1) + s_phi1(tx+1,ty+1) - s_phi1(tx-1,ty-1) - s_phi1(tx-1,ty+1))/12._fp_kind
+		dphi1dy(x,y) = (s_phi1(tx,ty+1) - s_phi1(tx,ty-1))/3._fp_kind + ( s_phi1(tx-1,ty+1) + s_phi1(tx+1,ty+1) - s_phi1(tx-1,ty-1) - s_phi1(tx+1,ty-1))/12._fp_kind
 		
-		dphi2dx(x,y) = (s_phi2(tx+1,ty) - s_phi2(tx-1,ty))/3. + ( s_phi2(tx+1,ty-1) + s_phi2(tx+1,ty+1) - s_phi2(tx-1,ty-1) - s_phi2(tx-1,ty+1))/12.
-		dphi2dy(x,y) = (s_phi2(tx,ty+1) - s_phi2(tx,ty-1))/3. + ( s_phi2(tx-1,ty+1) + s_phi2(tx+1,ty+1) - s_phi2(tx-1,ty-1) - s_phi2(tx+1,ty-1))/12.
+		dphi2dx(x,y) = (s_phi2(tx+1,ty) - s_phi2(tx-1,ty))/3._fp_kind + ( s_phi2(tx+1,ty-1) + s_phi2(tx+1,ty+1) - s_phi2(tx-1,ty-1) - s_phi2(tx-1,ty+1))/12._fp_kind
+		dphi2dy(x,y) = (s_phi2(tx,ty+1) - s_phi2(tx,ty-1))/3._fp_kind + ( s_phi2(tx-1,ty+1) + s_phi2(tx+1,ty+1) - s_phi2(tx-1,ty-1) - s_phi2(tx+1,ty-1))/12._fp_kind
 		
-		dphi3dx(x,y) = (s_phi3(tx+1,ty) - s_phi3(tx-1,ty))/3. + ( s_phi3(tx+1,ty-1) + s_phi3(tx+1,ty+1) - s_phi3(tx-1,ty-1) - s_phi3(tx-1,ty+1))/12.
-		dphi3dy(x,y) = (s_phi3(tx,ty+1) - s_phi3(tx,ty-1))/3. + ( s_phi3(tx-1,ty+1) + s_phi3(tx+1,ty+1) - s_phi3(tx-1,ty-1) - s_phi3(tx+1,ty-1))/12.
+		dphi3dx(x,y) = (s_phi3(tx+1,ty) - s_phi3(tx-1,ty))/3._fp_kind + ( s_phi3(tx+1,ty-1) + s_phi3(tx+1,ty+1) - s_phi3(tx-1,ty-1) - s_phi3(tx-1,ty+1))/12._fp_kind
+		dphi3dy(x,y) = (s_phi3(tx,ty+1) - s_phi3(tx,ty-1))/3._fp_kind + ( s_phi3(tx-1,ty+1) + s_phi3(tx+1,ty+1) - s_phi3(tx-1,ty-1) - s_phi3(tx+1,ty-1))/12._fp_kind
 	
 		
 	end if
@@ -202,26 +202,26 @@ contains
 		
 		if (x<=n(1) .and. x>=1 .and. y>=1 .and.  y<=n(2)) then
 			
-			tmp1(x,y) = sqrt( dphi1dx(x,y)**2. + dphi1dy(x,y)**2. )
+			tmp1(x,y) = sqrt( dphi1dx(x,y)**2._fp_kind + dphi1dy(x,y)**2._fp_kind )
 			if(tmp1(x,y)>0) then
 				ni1(x,y) = dphi1dx(x,y) / tmp1(x,y)
 				nj1(x,y) = dphi1dy(x,y) / tmp1(x,y)
 
 			else
-				tmp1(x,y) = sqrt( tmp1(x,y) + 1e-32 )
+				tmp1(x,y) = sqrt( tmp1(x,y) + 1e-32_fp_kind )
 				ni1(x,y) = dphi1dx(x,y) / tmp1(x,y)
 				nj1(x,y) = dphi1dy(x,y) / tmp1(x,y)
 
 			end if
 				
 				
-			tmp2(x,y) = sqrt( dphi2dx(x,y)**2. + dphi2dy(x,y)**2. )
+			tmp2(x,y) = sqrt( dphi2dx(x,y)**2._fp_kind + dphi2dy(x,y)**2._fp_kind )
 			if(tmp2(x,y)>0) then
 				ni2(x,y) = dphi2dx(x,y) / tmp2(x,y)
 				nj2(x,y) = dphi2dy(x,y) / tmp2(x,y)
 
 			else
-				tmp2(x,y) = sqrt( tmp2(x,y) + 1e-32 )
+				tmp2(x,y) = sqrt( tmp2(x,y) + 1e-32_fp_kind )
 				ni2(x,y) = dphi2dx(x,y) / tmp2(x,y)
 				nj2(x,y) = dphi2dy(x,y) / tmp2(x,y)
 
@@ -229,13 +229,13 @@ contains
 				
 				
 				
-			tmp3(x,y) = sqrt( dphi3dx(x,y)**2. + dphi3dy(x,y)**2. )
+			tmp3(x,y) = sqrt( dphi3dx(x,y)**2._fp_kind + dphi3dy(x,y)**2._fp_kind )
 			if(tmp3(x,y)>0) then
 				ni3(x,y) = dphi3dx(x,y) / tmp3(x,y)
 				nj3(x,y) = dphi3dy(x,y) / tmp3(x,y)
 
 			else
-				tmp3(x,y) = sqrt( tmp3(x,y) + 1e-32 )
+				tmp3(x,y) = sqrt( tmp3(x,y) + 1e-32_fp_kind )
 				ni3(x,y) = dphi3dx(x,y) / tmp3(x,y)
 				nj3(x,y) = dphi3dy(x,y) / tmp3(x,y)
 
@@ -316,27 +316,27 @@ contains
 		if (x<=nxd .and. x>=1 .and. y>=1 .and.  y<=nyd) then
 			
 			d2phi1(x,y) = ( s_phi1(tx-1,ty-1)+s_phi1(tx+1,ty-1)+s_phi1(tx-1,ty+1)+s_phi1(tx+1,ty+1) &
-				+4.*(s_phi1(tx,ty-1)+s_phi1(tx-1,ty)+s_phi1(tx+1,ty)+s_phi1(tx,ty+1)) - 20.*s_phi1(tx,ty) )/6.
+				+4._fp_kind*(s_phi1(tx,ty-1)+s_phi1(tx-1,ty)+s_phi1(tx+1,ty)+s_phi1(tx,ty+1)) - 20._fp_kind*s_phi1(tx,ty) )/6._fp_kind
 				
 			d2phi2(x,y) = ( s_phi2(tx-1,ty-1)+s_phi2(tx+1,ty-1)+s_phi2(tx-1,ty+1)+s_phi2(tx+1,ty+1) &
-				+4.*(s_phi2(tx,ty-1)+s_phi2(tx-1,ty)+s_phi2(tx+1,ty)+s_phi2(tx,ty+1)) - 20.*s_phi2(tx,ty) )/6.
+				+4._fp_kind*(s_phi2(tx,ty-1)+s_phi2(tx-1,ty)+s_phi2(tx+1,ty)+s_phi2(tx,ty+1)) - 20._fp_kind*s_phi2(tx,ty) )/6._fp_kind
 				
 			d2phi3(x,y) = ( s_phi3(tx-1,ty-1)+s_phi3(tx+1,ty-1)+s_phi3(tx-1,ty+1)+s_phi3(tx+1,ty+1) &
-				+4.*(s_phi3(tx,ty-1)+s_phi3(tx-1,ty)+s_phi3(tx+1,ty)+s_phi3(tx,ty+1)) - 20.*s_phi3(tx,ty) )/6.
+				+4._fp_kind*(s_phi3(tx,ty-1)+s_phi3(tx-1,ty)+s_phi3(tx+1,ty)+s_phi3(tx,ty+1)) - 20._fp_kind*s_phi3(tx,ty) )/6._fp_kind
 			
 		
 			
-			mu1(x,y) = (12. / w) * (landa(1) * s_phi1(tx,ty) * (1.- s_phi1(tx,ty)) * (1. - 2. * s_phi1(tx,ty))  &
-				- 2. * landat * s_phi1(tx,ty) * s_phi2(tx,ty) * (1. - s_phi1(tx,ty) - s_phi2(tx,ty))) &
-					- (3. / 4.) * w * landa(1) * d2phi1(x,y) 
+			mu1(x,y) = (12._fp_kind / w) * (landa(1) * s_phi1(tx,ty) * (1._fp_kind- s_phi1(tx,ty)) * (1._fp_kind - 2._fp_kind * s_phi1(tx,ty))  &
+				- 2._fp_kind * landat * s_phi1(tx,ty) * s_phi2(tx,ty) * (1._fp_kind - s_phi1(tx,ty) - s_phi2(tx,ty))) &
+					- (3._fp_kind / 4._fp_kind) * w * landa(1) * d2phi1(x,y) !- 2.0d0 * s_phi1(tx,ty)**2.0d0
 					
-			mu2(x,y) = (12. / w) * (landa(2) * s_phi2(tx,ty) * (1.- s_phi2(tx,ty)) * (1. - 2. * s_phi2(tx,ty))  &
-				- 2. * landat * s_phi1(tx,ty) * s_phi2(tx,ty) * (1. - s_phi1(tx,ty) - s_phi2(tx,ty))) &
-					- (3. / 4.) * w * landa(2) * d2phi2(x,y) 
+			mu2(x,y) = (12._fp_kind / w) * (landa(2) * s_phi2(tx,ty) * (1._fp_kind- s_phi2(tx,ty)) * (1._fp_kind - 2._fp_kind * s_phi2(tx,ty))  &
+				- 2._fp_kind * landat * s_phi1(tx,ty) * s_phi2(tx,ty) * (1._fp_kind - s_phi1(tx,ty) - s_phi2(tx,ty))) &
+					- (3._fp_kind / 4._fp_kind) * w * landa(2) * d2phi2(x,y) !- 2.0d0 * 0.03d0*s_phi2(tx,ty)**2.0d0
 					
-			mu3(x,y) = (12. / w) * (landa(3) * s_phi3(tx,ty) * (1.- s_phi3(tx,ty)) * (1. - 2. * s_phi3(tx,ty))  &
-				- 2. * landat * s_phi1(tx,ty) * s_phi2(tx,ty) * (1. - s_phi1(tx,ty) - s_phi2(tx,ty))) &
-					- (3. / 4.) * w * landa(3) * d2phi3(x,y) 
+			mu3(x,y) = (12._fp_kind / w) * (landa(3) * s_phi3(tx,ty) * (1._fp_kind- s_phi3(tx,ty)) * (1._fp_kind - 2._fp_kind * s_phi3(tx,ty))  &
+				- 2._fp_kind * landat * s_phi1(tx,ty) * s_phi2(tx,ty) * (1._fp_kind - s_phi1(tx,ty) - s_phi2(tx,ty))) &
+					- (3._fp_kind / 4._fp_kind) * w * landa(3) * d2phi3(x,y) !- 2.0d0 * 0.03d0*s_phi3(tx,ty)**2.0d0
 					
 			
 						
@@ -375,11 +375,11 @@ contains
 			
 		
 			
-			fpx(x,y) = - p(x,y) * (density(1) * dphi1dx(x,y) + density(2) * dphi2dx(x,y) + density(3) * dphi3dx(x,y)) / 3.
-			fpy(x,y) = - p(x,y) * (density(1) * dphi1dy(x,y) + density(2) * dphi2dy(x,y) + density(3) * dphi3dy(x,y)) / 3.
+			fpx(x,y) = - p(x,y) * (density(1) * dphi1dx(x,y) + density(2) * dphi2dx(x,y) + density(3) * dphi3dx(x,y)) / 3._fp_kind
+			fpy(x,y) = - p(x,y) * (density(1) * dphi1dy(x,y) + density(2) * dphi2dy(x,y) + density(3) * dphi3dy(x,y)) / 3._fp_kind
 					
 
-			u2(x,y) = ux(x,y)**2. + uy(x,y)**2.
+			u2(x,y) = ux(x,y)**2._fp_kind + uy(x,y)**2._fp_kind
 
 			eu0(x,y) = ex(0) * ux(x,y)  + ey(0) * uy(x,y)
 			eu1(x,y) = ex(1) * ux(x,y)  + ey(1) * uy(x,y)
@@ -392,20 +392,20 @@ contains
 			eu8(x,y) = ex(8) * ux(x,y)  + ey(8) * uy(x,y)
 
 
-			ga_wa0(x,y) = wa(0) * ( eu0(x,y)*(3. + 4.5*eu0(x,y)) - 1.5*u2(x,y) )
-			ga_wa1(x,y) = wa(1) * ( eu1(x,y)*(3. + 4.5*eu1(x,y)) - 1.5*u2(x,y) )
-			ga_wa2(x,y) = wa(2) * ( eu2(x,y)*(3. + 4.5*eu2(x,y)) - 1.5*u2(x,y) )
-			ga_wa3(x,y) = wa(3) * ( eu3(x,y)*(3. + 4.5*eu3(x,y)) - 1.5*u2(x,y) )
-			ga_wa4(x,y) = wa(4) * ( eu4(x,y)*(3. + 4.5*eu4(x,y)) - 1.5*u2(x,y) )
-			ga_wa5(x,y) = wa(5) * ( eu5(x,y)*(3. + 4.5*eu5(x,y)) - 1.5*u2(x,y) )
-			ga_wa6(x,y) = wa(6) * ( eu6(x,y)*(3. + 4.5*eu6(x,y)) - 1.5*u2(x,y) )
-			ga_wa7(x,y) = wa(7) * ( eu7(x,y)*(3. + 4.5*eu7(x,y)) - 1.5*u2(x,y) )
-			ga_wa8(x,y) = wa(8) * ( eu8(x,y)*(3. + 4.5*eu8(x,y)) - 1.5*u2(x,y) )
+			ga_wa0(x,y) = wa(0) * ( eu0(x,y)*(3._fp_kind + 4.5_fp_kind*eu0(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa1(x,y) = wa(1) * ( eu1(x,y)*(3._fp_kind + 4.5_fp_kind*eu1(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa2(x,y) = wa(2) * ( eu2(x,y)*(3._fp_kind + 4.5_fp_kind*eu2(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa3(x,y) = wa(3) * ( eu3(x,y)*(3._fp_kind + 4.5_fp_kind*eu3(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa4(x,y) = wa(4) * ( eu4(x,y)*(3._fp_kind + 4.5_fp_kind*eu4(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa5(x,y) = wa(5) * ( eu5(x,y)*(3._fp_kind + 4.5_fp_kind*eu5(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa6(x,y) = wa(6) * ( eu6(x,y)*(3._fp_kind + 4.5_fp_kind*eu6(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa7(x,y) = wa(7) * ( eu7(x,y)*(3._fp_kind + 4.5_fp_kind*eu7(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa8(x,y) = wa(8) * ( eu8(x,y)*(3._fp_kind + 4.5_fp_kind*eu8(x,y)) - 1.5_fp_kind*u2(x,y) )
 				
 						
 			
-			heav1(x,y) = 0.5d0 + sign(0.5,phi1(x,y))
-			heav2(x,y) = 0.5d0 + sign(0.5,phi2(x,y))
+			heav1(x,y) = 0.5_fp_kind + sign(0.5_fp_kind,phi1(x,y))
+			heav2(x,y) = 0.5_fp_kind + sign(0.5_fp_kind,phi2(x,y))
 
 			tauu(x,y) = (tau1 - tau3) * heav1(x,y) + (tau2 - tau3) * heav2(x,y) + tau3
 	
@@ -452,10 +452,10 @@ contains
 			
 			
 			
-			fmx(x,y) = (0.5-tauu(x,y))/tauu(x,y) * (sxx(x,y) * (density(1)*dphi1dx(x,y) + density(2)*dphi2dx(x,y) + density(3)*dphi3dx(x,y)) + &
+			fmx(x,y) = (0.5_fp_kind-tauu(x,y))/tauu(x,y) * (sxx(x,y) * (density(1)*dphi1dx(x,y) + density(2)*dphi2dx(x,y) + density(3)*dphi3dx(x,y)) + &
 			sxy(x,y) * (density(1) * dphi1dy(x,y) + density(2) * dphi2dy(x,y) + density(3) * dphi3dy(x,y)))
 			
-			fmy(x,y) = (0.5-tauu(x,y))/tauu(x,y) * (sxy(x,y) * (density(1)*dphi1dx(x,y) + density(2)*dphi2dx(x,y) + density(3)*dphi3dx(x,y)) + &
+			fmy(x,y) = (0.5_fp_kind-tauu(x,y))/tauu(x,y) * (sxy(x,y) * (density(1)*dphi1dx(x,y) + density(2)*dphi2dx(x,y) + density(3)*dphi3dx(x,y)) + &
 			syy(x,y) * (density(1)*dphi1dy(x,y) + density(2)*dphi2dy(x,y) + density(3)*dphi3dy(x,y) ))
 	
 	
@@ -471,8 +471,8 @@ contains
 						
 
 			if(is_solid_node(x,y)==0) then
-				ux(x,y) = (g(x,y,1)-g(x,y,3)+g(x,y,5)-g(x,y,6)-g(x,y,7)+g(x,y,8)) + 0.5*fx(x,y)/rho(x,y) 
-				uy(x,y) = (g(x,y,2)-g(x,y,4)+g(x,y,5)+g(x,y,6)-g(x,y,7)-g(x,y,8)) + 0.5*fy(x,y)/rho(x,y) 
+				ux(x,y) = (g(x,y,1)-g(x,y,3)+g(x,y,5)-g(x,y,6)-g(x,y,7)+g(x,y,8)) + 0.5_fp_kind*fx(x,y)/rho(x,y) 
+				uy(x,y) = (g(x,y,2)-g(x,y,4)+g(x,y,5)+g(x,y,6)-g(x,y,7)-g(x,y,8)) + 0.5_fp_kind*fy(x,y)/rho(x,y) 
 			else
 				ux(x,y) = 0
 				uy(x,y) = 0
@@ -527,7 +527,7 @@ contains
 			! h27_s(xs,ys) = h2(x,y,7)
 			! h28_s(xs,ys) = h2(x,y,8)
 				
-			u2(x,y) = ux(x,y)**2. + uy(x,y)**2.
+			u2(x,y) = ux(x,y)**2._fp_kind + uy(x,y)**2._fp_kind
 			
 			eu0(x,y) = ex(0) * ux(x,y)  + ey(0) * uy(x,y)
 			eu1(x,y) = ex(1) * ux(x,y)  + ey(1) * uy(x,y)
@@ -539,15 +539,15 @@ contains
 			eu7(x,y) = ex(7) * ux(x,y)  + ey(7) * uy(x,y)
 			eu8(x,y) = ex(8) * ux(x,y)  + ey(8) * uy(x,y)
 			
-			ga_wa0(x,y) = wa(0) * ( eu0(x,y)*(3. + 4.5*eu0(x,y)) - 1.5*u2(x,y) )
-			ga_wa1(x,y) = wa(1) * ( eu1(x,y)*(3. + 4.5*eu1(x,y)) - 1.5*u2(x,y) )
-			ga_wa2(x,y) = wa(2) * ( eu2(x,y)*(3. + 4.5*eu2(x,y)) - 1.5*u2(x,y) )
-			ga_wa3(x,y) = wa(3) * ( eu3(x,y)*(3. + 4.5*eu3(x,y)) - 1.5*u2(x,y) )
-			ga_wa4(x,y) = wa(4) * ( eu4(x,y)*(3. + 4.5*eu4(x,y)) - 1.5*u2(x,y) )
-			ga_wa5(x,y) = wa(5) * ( eu5(x,y)*(3. + 4.5*eu5(x,y)) - 1.5*u2(x,y) )
-			ga_wa6(x,y) = wa(6) * ( eu6(x,y)*(3. + 4.5*eu6(x,y)) - 1.5*u2(x,y) )
-			ga_wa7(x,y) = wa(7) * ( eu7(x,y)*(3. + 4.5*eu7(x,y)) - 1.5*u2(x,y) )
-			ga_wa8(x,y) = wa(8) * ( eu8(x,y)*(3. + 4.5*eu8(x,y)) - 1.5*u2(x,y) )
+			ga_wa0(x,y) = wa(0) * ( eu0(x,y)*(3._fp_kind + 4.5_fp_kind*eu0(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa1(x,y) = wa(1) * ( eu1(x,y)*(3._fp_kind + 4.5_fp_kind*eu1(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa2(x,y) = wa(2) * ( eu2(x,y)*(3._fp_kind + 4.5_fp_kind*eu2(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa3(x,y) = wa(3) * ( eu3(x,y)*(3._fp_kind + 4.5_fp_kind*eu3(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa4(x,y) = wa(4) * ( eu4(x,y)*(3._fp_kind + 4.5_fp_kind*eu4(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa5(x,y) = wa(5) * ( eu5(x,y)*(3._fp_kind + 4.5_fp_kind*eu5(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa6(x,y) = wa(6) * ( eu6(x,y)*(3._fp_kind + 4.5_fp_kind*eu6(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa7(x,y) = wa(7) * ( eu7(x,y)*(3._fp_kind + 4.5_fp_kind*eu7(x,y)) - 1.5_fp_kind*u2(x,y) )
+			ga_wa8(x,y) = wa(8) * ( eu8(x,y)*(3._fp_kind + 4.5_fp_kind*eu8(x,y)) - 1.5_fp_kind*u2(x,y) )
 		
 
 			gamma0(x,y) = ga_wa0(x,y) + wa(0)
@@ -562,138 +562,138 @@ contains
 			
 			
 			
-			efh10(x,y)  = 2. * ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(0) * ni1(x,y) + ey(0) * nj1(x,y))) &
-				- ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(0) * ni2(x,y) + ey(0) * nj2(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(0) * ni3(x,y) + ey(0) * nj3(x,y)))
+			efh10(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(0) * ni1(x,y) + ey(0) * nj1(x,y))) &
+				- ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(0) * ni2(x,y) + ey(0) * nj2(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(0) * ni3(x,y) + ey(0) * nj3(x,y)))
 				
-			efh11(x,y)  = 2. * ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(1) * ni1(x,y) + ey(1) * nj1(x,y))) &
-				- ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(1) * ni2(x,y) + ey(1) * nj2(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(1) * ni3(x,y) + ey(1) * nj3(x,y)))
+			efh11(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(1) * ni1(x,y) + ey(1) * nj1(x,y))) &
+				- ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(1) * ni2(x,y) + ey(1) * nj2(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(1) * ni3(x,y) + ey(1) * nj3(x,y)))
 				
-			efh12(x,y)  = 2. * ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(2) * ni1(x,y) + ey(2) * nj1(x,y))) &
-				- ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(2) * ni2(x,y) + ey(2) * nj2(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(2) * ni3(x,y) + ey(2) * nj3(x,y)))
+			efh12(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(2) * ni1(x,y) + ey(2) * nj1(x,y))) &
+				- ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(2) * ni2(x,y) + ey(2) * nj2(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(2) * ni3(x,y) + ey(2) * nj3(x,y)))
 				
-			efh13(x,y)  = 2. * ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(3) * ni1(x,y) + ey(3) * nj1(x,y))) &
-				- ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(3) * ni2(x,y) + ey(3) * nj2(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(3) * ni3(x,y) + ey(3) * nj3(x,y)))
+			efh13(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(3) * ni1(x,y) + ey(3) * nj1(x,y))) &
+				- ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(3) * ni2(x,y) + ey(3) * nj2(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(3) * ni3(x,y) + ey(3) * nj3(x,y)))
 				
-			efh14(x,y)  = 2. * ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(4) * ni1(x,y) + ey(4) * nj1(x,y))) &
-				- ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(4) * ni2(x,y) + ey(4) * nj2(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(4) * ni3(x,y) + ey(4) * nj3(x,y)))
+			efh14(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(4) * ni1(x,y) + ey(4) * nj1(x,y))) &
+				- ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(4) * ni2(x,y) + ey(4) * nj2(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(4) * ni3(x,y) + ey(4) * nj3(x,y)))
 				
-			efh15(x,y)  = 2. * ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(5) * ni1(x,y) + ey(5) * nj1(x,y))) &
-				- ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(5) * ni2(x,y) + ey(5) * nj2(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(5) * ni3(x,y) + ey(5) * nj3(x,y)))
+			efh15(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(5) * ni1(x,y) + ey(5) * nj1(x,y))) &
+				- ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(5) * ni2(x,y) + ey(5) * nj2(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(5) * ni3(x,y) + ey(5) * nj3(x,y)))
 				
-			efh16(x,y)  = 2. * ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(6) * ni1(x,y) + ey(6) * nj1(x,y))) &
-				- ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(6) * ni2(x,y) + ey(6) * nj2(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(6) * ni3(x,y) + ey(6) * nj3(x,y)))
+			efh16(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(6) * ni1(x,y) + ey(6) * nj1(x,y))) &
+				- ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(6) * ni2(x,y) + ey(6) * nj2(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(6) * ni3(x,y) + ey(6) * nj3(x,y)))
 				
-			efh17(x,y)  = 2. * ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(7) * ni1(x,y) + ey(7) * nj1(x,y))) &
-				- ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(7) * ni2(x,y) + ey(7) * nj2(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(7) * ni3(x,y) + ey(7) * nj3(x,y)))
+			efh17(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(7) * ni1(x,y) + ey(7) * nj1(x,y))) &
+				- ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(7) * ni2(x,y) + ey(7) * nj2(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(7) * ni3(x,y) + ey(7) * nj3(x,y)))
 				
-			efh18(x,y)  = 2. * ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(8) * ni1(x,y) + ey(8) * nj1(x,y))) &
-				- ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(8) * ni2(x,y) + ey(8) * nj2(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(8) * ni3(x,y) + ey(8) * nj3(x,y)))
+			efh18(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(8) * ni1(x,y) + ey(8) * nj1(x,y))) &
+				- ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(8) * ni2(x,y) + ey(8) * nj2(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(8) * ni3(x,y) + ey(8) * nj3(x,y)))
 	
 			 
 			 
 
-			efh20(x,y)  = 2. * ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(0) * ni2(x,y) + ey(0) * nj2(x,y))) &
-				- ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(0) * ni1(x,y) + ey(0) * nj1(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(0) * ni3(x,y) + ey(0) * nj3(x,y)))
+			efh20(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(0) * ni2(x,y) + ey(0) * nj2(x,y))) &
+				- ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(0) * ni1(x,y) + ey(0) * nj1(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(0) * ni3(x,y) + ey(0) * nj3(x,y)))
 				
-			efh21(x,y)  = 2. * ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(1) * ni2(x,y) + ey(1) * nj2(x,y))) &
-				- ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(1) * ni1(x,y) + ey(1) * nj1(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(1) * ni3(x,y) + ey(1) * nj3(x,y)))
+			efh21(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(1) * ni2(x,y) + ey(1) * nj2(x,y))) &
+				- ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(1) * ni1(x,y) + ey(1) * nj1(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(1) * ni3(x,y) + ey(1) * nj3(x,y)))
 				
-			efh22(x,y)  = 2. * ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(2) * ni2(x,y) + ey(2) * nj2(x,y))) &
-				- ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(2) * ni1(x,y) + ey(2) * nj1(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(2) * ni3(x,y) + ey(2) * nj3(x,y)))
+			efh22(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(2) * ni2(x,y) + ey(2) * nj2(x,y))) &
+				- ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(2) * ni1(x,y) + ey(2) * nj1(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(2) * ni3(x,y) + ey(2) * nj3(x,y)))
 				
-			efh23(x,y)  = 2. * ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(3) * ni2(x,y) + ey(3) * nj2(x,y))) &
-				- ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(3) * ni1(x,y) + ey(3) * nj1(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(3) * ni3(x,y) + ey(3) * nj3(x,y)))
+			efh23(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(3) * ni2(x,y) + ey(3) * nj2(x,y))) &
+				- ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(3) * ni1(x,y) + ey(3) * nj1(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(3) * ni3(x,y) + ey(3) * nj3(x,y)))
 				
-			efh24(x,y)  = 2. * ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(4) * ni2(x,y) + ey(4) * nj2(x,y))) &
-				- ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(4) * ni1(x,y) + ey(4) * nj1(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(4) * ni3(x,y) + ey(4) * nj3(x,y)))
+			efh24(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(4) * ni2(x,y) + ey(4) * nj2(x,y))) &
+				- ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(4) * ni1(x,y) + ey(4) * nj1(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(4) * ni3(x,y) + ey(4) * nj3(x,y)))
 				
-			efh25(x,y)  = 2. * ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(5) * ni2(x,y) + ey(5) * nj2(x,y))) &
-				- ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(5) * ni1(x,y) + ey(5) * nj1(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(5) * ni3(x,y) + ey(5) * nj3(x,y)))
+			efh25(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(5) * ni2(x,y) + ey(5) * nj2(x,y))) &
+				- ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(5) * ni1(x,y) + ey(5) * nj1(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(5) * ni3(x,y) + ey(5) * nj3(x,y)))
 				
-			efh26(x,y)  = 2. * ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(6) * ni2(x,y) + ey(6) * nj2(x,y))) &
-				- ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(6) * ni1(x,y) + ey(6) * nj1(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(6) * ni3(x,y) + ey(6) * nj3(x,y)))
+			efh26(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(6) * ni2(x,y) + ey(6) * nj2(x,y))) &
+				- ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(6) * ni1(x,y) + ey(6) * nj1(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(6) * ni3(x,y) + ey(6) * nj3(x,y)))
 				
-			efh27(x,y)  = 2. * ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(7) * ni2(x,y) + ey(7) * nj2(x,y))) &
-				- ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(7) * ni1(x,y) + ey(7) * nj1(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(7) * ni3(x,y) + ey(7) * nj3(x,y)))
+			efh27(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(7) * ni2(x,y) + ey(7) * nj2(x,y))) &
+				- ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(7) * ni1(x,y) + ey(7) * nj1(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(7) * ni3(x,y) + ey(7) * nj3(x,y)))
 				
-			efh28(x,y)  = 2. * ((4./w) * abs(phi2(x,y) * (1. - phi2(x,y))) * (ex(8) * ni2(x,y) + ey(8) * nj2(x,y))) &
-				- ((4./w) * abs(phi1(x,y) * (1. - phi1(x,y))) * (ex(8) * ni1(x,y) + ey(8) * nj1(x,y)) &
-				+ (4./w) * abs(phi3(x,y) * (1. - phi3(x,y))) * (ex(8) * ni3(x,y) + ey(8) * nj3(x,y)))
+			efh28(x,y)  = 2._fp_kind * ((4._fp_kind/w) * abs(phi2(x,y) * (1._fp_kind - phi2(x,y))) * (ex(8) * ni2(x,y) + ey(8) * nj2(x,y))) &
+				- ((4._fp_kind/w) * abs(phi1(x,y) * (1._fp_kind - phi1(x,y))) * (ex(8) * ni1(x,y) + ey(8) * nj1(x,y)) &
+				+ (4._fp_kind/w) * abs(phi3(x,y) * (1._fp_kind - phi3(x,y))) * (ex(8) * ni3(x,y) + ey(8) * nj3(x,y)))
 	
 
 
 			
-			hlph10(x,y) = wa(0) * efh10(x,y) / 3.
-			hlph11(x,y) = wa(1) * efh11(x,y) / 3.
-			hlph12(x,y) = wa(2) * efh12(x,y) / 3.
-			hlph13(x,y) = wa(3) * efh13(x,y) / 3.
-			hlph14(x,y) = wa(4) * efh14(x,y) / 3.
-			hlph15(x,y) = wa(5) * efh15(x,y) / 3.
-			hlph16(x,y) = wa(6) * efh16(x,y) / 3.
-			hlph17(x,y) = wa(7) * efh17(x,y) / 3.
-			hlph18(x,y) = wa(8) * efh18(x,y) / 3.
+			hlph10(x,y) = wa(0) * efh10(x,y) / 3._fp_kind
+			hlph11(x,y) = wa(1) * efh11(x,y) / 3._fp_kind
+			hlph12(x,y) = wa(2) * efh12(x,y) / 3._fp_kind
+			hlph13(x,y) = wa(3) * efh13(x,y) / 3._fp_kind
+			hlph14(x,y) = wa(4) * efh14(x,y) / 3._fp_kind
+			hlph15(x,y) = wa(5) * efh15(x,y) / 3._fp_kind
+			hlph16(x,y) = wa(6) * efh16(x,y) / 3._fp_kind
+			hlph17(x,y) = wa(7) * efh17(x,y) / 3._fp_kind
+			hlph18(x,y) = wa(8) * efh18(x,y) / 3._fp_kind
 			
-			hlph20(x,y) = wa(0) * efh20(x,y) / 3.
-			hlph21(x,y) = wa(1) * efh21(x,y) / 3.
-			hlph22(x,y) = wa(2) * efh22(x,y) / 3.
-			hlph23(x,y) = wa(3) * efh23(x,y) / 3.
-			hlph24(x,y) = wa(4) * efh24(x,y) / 3.
-			hlph25(x,y) = wa(5) * efh25(x,y) / 3.
-			hlph26(x,y) = wa(6) * efh26(x,y) / 3.
-			hlph27(x,y) = wa(7) * efh27(x,y) / 3.
-			hlph28(x,y) = wa(8) * efh28(x,y) / 3.
+			hlph20(x,y) = wa(0) * efh20(x,y) / 3._fp_kind
+			hlph21(x,y) = wa(1) * efh21(x,y) / 3._fp_kind
+			hlph22(x,y) = wa(2) * efh22(x,y) / 3._fp_kind
+			hlph23(x,y) = wa(3) * efh23(x,y) / 3._fp_kind
+			hlph24(x,y) = wa(4) * efh24(x,y) / 3._fp_kind
+			hlph25(x,y) = wa(5) * efh25(x,y) / 3._fp_kind
+			hlph26(x,y) = wa(6) * efh26(x,y) / 3._fp_kind
+			hlph27(x,y) = wa(7) * efh27(x,y) / 3._fp_kind
+			hlph28(x,y) = wa(8) * efh28(x,y) / 3._fp_kind
 			
 			
 
-			heq10(x,y) = phi1(x,y) * gamma0(x,y) - 0.5 * hlph10(x,y)
-			heq11(x,y) = phi1(x,y) * gamma1(x,y) - 0.5 * hlph11(x,y)
-			heq12(x,y) = phi1(x,y) * gamma2(x,y) - 0.5 * hlph12(x,y)
-			heq13(x,y) = phi1(x,y) * gamma3(x,y) - 0.5 * hlph13(x,y)
-			heq14(x,y) = phi1(x,y) * gamma4(x,y) - 0.5 * hlph14(x,y)
-			heq15(x,y) = phi1(x,y) * gamma5(x,y) - 0.5 * hlph15(x,y)
-			heq16(x,y) = phi1(x,y) * gamma6(x,y) - 0.5 * hlph16(x,y)
-			heq17(x,y) = phi1(x,y) * gamma7(x,y) - 0.5 * hlph17(x,y)
-			heq18(x,y) = phi1(x,y) * gamma8(x,y) - 0.5 * hlph18(x,y)
+			heq10(x,y) = phi1(x,y) * gamma0(x,y) - 0.5_fp_kind * hlph10(x,y)
+			heq11(x,y) = phi1(x,y) * gamma1(x,y) - 0.5_fp_kind * hlph11(x,y)
+			heq12(x,y) = phi1(x,y) * gamma2(x,y) - 0.5_fp_kind * hlph12(x,y)
+			heq13(x,y) = phi1(x,y) * gamma3(x,y) - 0.5_fp_kind * hlph13(x,y)
+			heq14(x,y) = phi1(x,y) * gamma4(x,y) - 0.5_fp_kind * hlph14(x,y)
+			heq15(x,y) = phi1(x,y) * gamma5(x,y) - 0.5_fp_kind * hlph15(x,y)
+			heq16(x,y) = phi1(x,y) * gamma6(x,y) - 0.5_fp_kind * hlph16(x,y)
+			heq17(x,y) = phi1(x,y) * gamma7(x,y) - 0.5_fp_kind * hlph17(x,y)
+			heq18(x,y) = phi1(x,y) * gamma8(x,y) - 0.5_fp_kind * hlph18(x,y)
 			
 			
-			heq20(x,y) = phi2(x,y) * gamma0(x,y) - 0.5 * hlph20(x,y)
-			heq21(x,y) = phi2(x,y) * gamma1(x,y) - 0.5 * hlph21(x,y)
-			heq22(x,y) = phi2(x,y) * gamma2(x,y) - 0.5 * hlph22(x,y)
-			heq23(x,y) = phi2(x,y) * gamma3(x,y) - 0.5 * hlph23(x,y)
-			heq24(x,y) = phi2(x,y) * gamma4(x,y) - 0.5 * hlph24(x,y)
-			heq25(x,y) = phi2(x,y) * gamma5(x,y) - 0.5 * hlph25(x,y)
-			heq26(x,y) = phi2(x,y) * gamma6(x,y) - 0.5 * hlph26(x,y)
-			heq27(x,y) = phi2(x,y) * gamma7(x,y) - 0.5 * hlph27(x,y)
-			heq28(x,y) = phi2(x,y) * gamma8(x,y) - 0.5 * hlph28(x,y)
+			heq20(x,y) = phi2(x,y) * gamma0(x,y) - 0.5_fp_kind * hlph20(x,y)
+			heq21(x,y) = phi2(x,y) * gamma1(x,y) - 0.5_fp_kind * hlph21(x,y)
+			heq22(x,y) = phi2(x,y) * gamma2(x,y) - 0.5_fp_kind * hlph22(x,y)
+			heq23(x,y) = phi2(x,y) * gamma3(x,y) - 0.5_fp_kind * hlph23(x,y)
+			heq24(x,y) = phi2(x,y) * gamma4(x,y) - 0.5_fp_kind * hlph24(x,y)
+			heq25(x,y) = phi2(x,y) * gamma5(x,y) - 0.5_fp_kind * hlph25(x,y)
+			heq26(x,y) = phi2(x,y) * gamma6(x,y) - 0.5_fp_kind * hlph26(x,y)
+			heq27(x,y) = phi2(x,y) * gamma7(x,y) - 0.5_fp_kind * hlph27(x,y)
+			heq28(x,y) = phi2(x,y) * gamma8(x,y) - 0.5_fp_kind * hlph28(x,y)
 	
 			if (is_solid_node(x,y)==0) then
 			
-				h1(x,y,0) = h1(x,y,0) * (1.-w_c) + heq10(x,y) * w_c +  hlph10(x,y)
-				h1(x,y,1) = h1(x,y,1) * (1.-w_c) + heq11(x,y) * w_c +  hlph11(x,y)
-				h1(x,y,2) = h1(x,y,2) * (1.-w_c) + heq12(x,y) * w_c +  hlph12(x,y)
-				h1(x,y,3) = h1(x,y,3) * (1.-w_c) + heq13(x,y) * w_c +  hlph13(x,y)
-				h1(x,y,4) = h1(x,y,4) * (1.-w_c) + heq14(x,y) * w_c +  hlph14(x,y)
-				h1(x,y,5) = h1(x,y,5) * (1.-w_c) + heq15(x,y) * w_c +  hlph15(x,y)
-				h1(x,y,6) = h1(x,y,6) * (1.-w_c) + heq16(x,y) * w_c +  hlph16(x,y)
-				h1(x,y,7) = h1(x,y,7) * (1.-w_c) + heq17(x,y) * w_c +  hlph17(x,y)
-				h1(x,y,8) = h1(x,y,8) * (1.-w_c) + heq18(x,y) * w_c +  hlph18(x,y)
+				h1(x,y,0) = h1(x,y,0) * (1._fp_kind-w_c) + heq10(x,y) * w_c +  hlph10(x,y)
+				h1(x,y,1) = h1(x,y,1) * (1._fp_kind-w_c) + heq11(x,y) * w_c +  hlph11(x,y)
+				h1(x,y,2) = h1(x,y,2) * (1._fp_kind-w_c) + heq12(x,y) * w_c +  hlph12(x,y)
+				h1(x,y,3) = h1(x,y,3) * (1._fp_kind-w_c) + heq13(x,y) * w_c +  hlph13(x,y)
+				h1(x,y,4) = h1(x,y,4) * (1._fp_kind-w_c) + heq14(x,y) * w_c +  hlph14(x,y)
+				h1(x,y,5) = h1(x,y,5) * (1._fp_kind-w_c) + heq15(x,y) * w_c +  hlph15(x,y)
+				h1(x,y,6) = h1(x,y,6) * (1._fp_kind-w_c) + heq16(x,y) * w_c +  hlph16(x,y)
+				h1(x,y,7) = h1(x,y,7) * (1._fp_kind-w_c) + heq17(x,y) * w_c +  hlph17(x,y)
+				h1(x,y,8) = h1(x,y,8) * (1._fp_kind-w_c) + heq18(x,y) * w_c +  hlph18(x,y)
 				
 				! h10_s(xs,ys) = h10_s(xs,ys) * (1.-w_c) + heq10(x,y) * w_c +  hlph10(x,y)
 				! h11_s(xs,ys) = h11_s(xs,ys) * (1.-w_c) + heq11(x,y) * w_c +  hlph11(x,y)
@@ -708,15 +708,15 @@ contains
 				
 				
 				
-				h2(x,y,0) = h2(x,y,0) * (1.-w_c) + heq20(x,y) * w_c +  hlph20(x,y)
-				h2(x,y,1) = h2(x,y,1) * (1.-w_c) + heq21(x,y) * w_c +  hlph21(x,y)
-				h2(x,y,2) = h2(x,y,2) * (1.-w_c) + heq22(x,y) * w_c +  hlph22(x,y)
-				h2(x,y,3) = h2(x,y,3) * (1.-w_c) + heq23(x,y) * w_c +  hlph23(x,y)
-				h2(x,y,4) = h2(x,y,4) * (1.-w_c) + heq24(x,y) * w_c +  hlph24(x,y)
-				h2(x,y,5) = h2(x,y,5) * (1.-w_c) + heq25(x,y) * w_c +  hlph25(x,y)
-				h2(x,y,6) = h2(x,y,6) * (1.-w_c) + heq26(x,y) * w_c +  hlph26(x,y)
-				h2(x,y,7) = h2(x,y,7) * (1.-w_c) + heq27(x,y) * w_c +  hlph27(x,y)
-				h2(x,y,8) = h2(x,y,8) * (1.-w_c) + heq28(x,y) * w_c +  hlph28(x,y)
+				h2(x,y,0) = h2(x,y,0) * (1._fp_kind-w_c) + heq20(x,y) * w_c +  hlph20(x,y)
+				h2(x,y,1) = h2(x,y,1) * (1._fp_kind-w_c) + heq21(x,y) * w_c +  hlph21(x,y)
+				h2(x,y,2) = h2(x,y,2) * (1._fp_kind-w_c) + heq22(x,y) * w_c +  hlph22(x,y)
+				h2(x,y,3) = h2(x,y,3) * (1._fp_kind-w_c) + heq23(x,y) * w_c +  hlph23(x,y)
+				h2(x,y,4) = h2(x,y,4) * (1._fp_kind-w_c) + heq24(x,y) * w_c +  hlph24(x,y)
+				h2(x,y,5) = h2(x,y,5) * (1._fp_kind-w_c) + heq25(x,y) * w_c +  hlph25(x,y)
+				h2(x,y,6) = h2(x,y,6) * (1._fp_kind-w_c) + heq26(x,y) * w_c +  hlph26(x,y)
+				h2(x,y,7) = h2(x,y,7) * (1._fp_kind-w_c) + heq27(x,y) * w_c +  hlph27(x,y)
+				h2(x,y,8) = h2(x,y,8) * (1._fp_kind-w_c) + heq28(x,y) * w_c +  hlph28(x,y)
 				
 				! h20_s(xs,ys) = h20_s(xs,ys) * (1.-w_c) + heq20(x,y) * w_c +  hlph20(x,y)
 				! h21_s(xs,ys) = h21_s(xs,ys) * (1.-w_c) + heq21(x,y) * w_c +  hlph21(x,y)
@@ -833,10 +833,10 @@ contains
 			
 			
 			
-			fmx(x,y) = (0.5-tauu(x,y))/tauu(x,y) * (sxx(x,y) * (density(1)*dphi1dx(x,y) + density(2)*dphi2dx(x,y) + density(3)*dphi3dx(x,y)) + &
+			fmx(x,y) = (0.5_fp_kind-tauu(x,y))/tauu(x,y) * (sxx(x,y) * (density(1)*dphi1dx(x,y) + density(2)*dphi2dx(x,y) + density(3)*dphi3dx(x,y)) + &
 			sxy(x,y) * (density(1) * dphi1dy(x,y) + density(2) * dphi2dy(x,y) + density(3) * dphi3dy(x,y)))
 
-			fmy(x,y) = (0.5-tauu(x,y))/tauu(x,y) * (sxy(x,y) * (density(1)*dphi1dx(x,y) + density(2)*dphi2dx(x,y) + density(3)*dphi3dx(x,y)) + &
+			fmy(x,y) = (0.5_fp_kind-tauu(x,y))/tauu(x,y) * (sxy(x,y) * (density(1)*dphi1dx(x,y) + density(2)*dphi2dx(x,y) + density(3)*dphi3dx(x,y)) + &
 			syy(x,y) * (density(1)*dphi1dy(x,y) + density(2)*dphi2dy(x,y) + density(3)*dphi3dy(x,y) ))
 
 
@@ -893,41 +893,41 @@ contains
 			ef8(x,y) = ex(8) * fx(x,y) + ey(8) * fy(x,y)
 			
 
-			hlpg0(x,y) = 3. * wa(0) * ef0(x,y) / rho(x,y)
-			hlpg1(x,y) = 3. * wa(1) * ef1(x,y) / rho(x,y)
-			hlpg2(x,y) = 3. * wa(2) * ef2(x,y) / rho(x,y)
-			hlpg3(x,y) = 3. * wa(3) * ef3(x,y) / rho(x,y)
-			hlpg4(x,y) = 3. * wa(4) * ef4(x,y) / rho(x,y)
-			hlpg5(x,y) = 3. * wa(5) * ef5(x,y) / rho(x,y)
-			hlpg6(x,y) = 3. * wa(6) * ef6(x,y) / rho(x,y)
-			hlpg7(x,y) = 3. * wa(7) * ef7(x,y) / rho(x,y)
-			hlpg8(x,y) = 3. * wa(8) * ef8(x,y) / rho(x,y)
+			hlpg0(x,y) = 3._fp_kind * wa(0) * ef0(x,y) / rho(x,y)
+			hlpg1(x,y) = 3._fp_kind * wa(1) * ef1(x,y) / rho(x,y)
+			hlpg2(x,y) = 3._fp_kind * wa(2) * ef2(x,y) / rho(x,y)
+			hlpg3(x,y) = 3._fp_kind * wa(3) * ef3(x,y) / rho(x,y)
+			hlpg4(x,y) = 3._fp_kind * wa(4) * ef4(x,y) / rho(x,y)
+			hlpg5(x,y) = 3._fp_kind * wa(5) * ef5(x,y) / rho(x,y)
+			hlpg6(x,y) = 3._fp_kind * wa(6) * ef6(x,y) / rho(x,y)
+			hlpg7(x,y) = 3._fp_kind * wa(7) * ef7(x,y) / rho(x,y)
+			hlpg8(x,y) = 3._fp_kind * wa(8) * ef8(x,y) / rho(x,y)
 			
 
-			geq0(x,y) = p(x,y) * wa(0) + ga_wa0(x,y) - 0.5 * hlpg0(x,y)
-			geq1(x,y) = p(x,y) * wa(1) + ga_wa1(x,y) - 0.5 * hlpg1(x,y)
-			geq2(x,y) = p(x,y) * wa(2) + ga_wa2(x,y) - 0.5 * hlpg2(x,y)
-			geq3(x,y) = p(x,y) * wa(3) + ga_wa3(x,y) - 0.5 * hlpg3(x,y)
-			geq4(x,y) = p(x,y) * wa(4) + ga_wa4(x,y) - 0.5 * hlpg4(x,y)
-			geq5(x,y) = p(x,y) * wa(5) + ga_wa5(x,y) - 0.5 * hlpg5(x,y)
-			geq6(x,y) = p(x,y) * wa(6) + ga_wa6(x,y) - 0.5 * hlpg6(x,y)
-			geq7(x,y) = p(x,y) * wa(7) + ga_wa7(x,y) - 0.5 * hlpg7(x,y)
-			geq8(x,y) = p(x,y) * wa(8) + ga_wa8(x,y) - 0.5 * hlpg8(x,y)
+			geq0(x,y) = p(x,y) * wa(0) + ga_wa0(x,y) - 0.5_fp_kind * hlpg0(x,y)
+			geq1(x,y) = p(x,y) * wa(1) + ga_wa1(x,y) - 0.5_fp_kind * hlpg1(x,y)
+			geq2(x,y) = p(x,y) * wa(2) + ga_wa2(x,y) - 0.5_fp_kind * hlpg2(x,y)
+			geq3(x,y) = p(x,y) * wa(3) + ga_wa3(x,y) - 0.5_fp_kind * hlpg3(x,y)
+			geq4(x,y) = p(x,y) * wa(4) + ga_wa4(x,y) - 0.5_fp_kind * hlpg4(x,y)
+			geq5(x,y) = p(x,y) * wa(5) + ga_wa5(x,y) - 0.5_fp_kind * hlpg5(x,y)
+			geq6(x,y) = p(x,y) * wa(6) + ga_wa6(x,y) - 0.5_fp_kind * hlpg6(x,y)
+			geq7(x,y) = p(x,y) * wa(7) + ga_wa7(x,y) - 0.5_fp_kind * hlpg7(x,y)
+			geq8(x,y) = p(x,y) * wa(8) + ga_wa8(x,y) - 0.5_fp_kind * hlpg8(x,y)
 			
 		
 
 
 			if (is_solid_node(x,y)==0) then
 
-				g(x,y,0) = g(x,y,0) * (1.-(1./tauu(x,y))) + geq0(x,y) * (1./tauu(x,y)) +  hlpg0(x,y)
-				g(x,y,1) = g(x,y,1) * (1.-(1./tauu(x,y))) + geq1(x,y) * (1./tauu(x,y)) +  hlpg1(x,y)
-				g(x,y,2) = g(x,y,2) * (1.-(1./tauu(x,y))) + geq2(x,y) * (1./tauu(x,y)) +  hlpg2(x,y)
-				g(x,y,3) = g(x,y,3) * (1.-(1./tauu(x,y))) + geq3(x,y) * (1./tauu(x,y)) +  hlpg3(x,y)
-				g(x,y,4) = g(x,y,4) * (1.-(1./tauu(x,y))) + geq4(x,y) * (1./tauu(x,y)) +  hlpg4(x,y)
-				g(x,y,5) = g(x,y,5) * (1.-(1./tauu(x,y))) + geq5(x,y) * (1./tauu(x,y)) +  hlpg5(x,y)
-				g(x,y,6) = g(x,y,6) * (1.-(1./tauu(x,y))) + geq6(x,y) * (1./tauu(x,y)) +  hlpg6(x,y)
-				g(x,y,7) = g(x,y,7) * (1.-(1./tauu(x,y))) + geq7(x,y) * (1./tauu(x,y)) +  hlpg7(x,y)
-				g(x,y,8) = g(x,y,8) * (1.-(1./tauu(x,y))) + geq8(x,y) * (1./tauu(x,y)) +  hlpg8(x,y)
+				g(x,y,0) = g(x,y,0) * (1._fp_kind-(1._fp_kind/tauu(x,y))) + geq0(x,y) * (1._fp_kind/tauu(x,y)) +  hlpg0(x,y)
+				g(x,y,1) = g(x,y,1) * (1._fp_kind-(1._fp_kind/tauu(x,y))) + geq1(x,y) * (1._fp_kind/tauu(x,y)) +  hlpg1(x,y)
+				g(x,y,2) = g(x,y,2) * (1._fp_kind-(1._fp_kind/tauu(x,y))) + geq2(x,y) * (1._fp_kind/tauu(x,y)) +  hlpg2(x,y)
+				g(x,y,3) = g(x,y,3) * (1._fp_kind-(1._fp_kind/tauu(x,y))) + geq3(x,y) * (1._fp_kind/tauu(x,y)) +  hlpg3(x,y)
+				g(x,y,4) = g(x,y,4) * (1._fp_kind-(1._fp_kind/tauu(x,y))) + geq4(x,y) * (1._fp_kind/tauu(x,y)) +  hlpg4(x,y)
+				g(x,y,5) = g(x,y,5) * (1._fp_kind-(1._fp_kind/tauu(x,y))) + geq5(x,y) * (1._fp_kind/tauu(x,y)) +  hlpg5(x,y)
+				g(x,y,6) = g(x,y,6) * (1._fp_kind-(1._fp_kind/tauu(x,y))) + geq6(x,y) * (1._fp_kind/tauu(x,y)) +  hlpg6(x,y)
+				g(x,y,7) = g(x,y,7) * (1._fp_kind-(1._fp_kind/tauu(x,y))) + geq7(x,y) * (1._fp_kind/tauu(x,y)) +  hlpg7(x,y)
+				g(x,y,8) = g(x,y,8) * (1._fp_kind-(1._fp_kind/tauu(x,y))) + geq8(x,y) * (1._fp_kind/tauu(x,y)) +  hlpg8(x,y)
 
 			end if
 					
