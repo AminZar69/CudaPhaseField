@@ -4,6 +4,8 @@ taking the advantage of parallel processing via the CUDA API. The code simulates
 the 2D coalescence of two immiscible droplets surrounded by the third phase. The
 populations are defined in a way to preserve the device memory usage in a coalesced
 manner. 	
+## Simulation
+![Droplet coalescence animation](assets/animation.gif)
 ### Requirements
 The nvfortran compiler along with the cuda toolkits needs to be installed to be able to run this package. For more information regarding the nvfortran installation, we kindly refer to the following link <https://docs.nvidia.com/hpc-sdk/index.html>. Moreover, since the CUDA API is utilised, an NVIDIA GPU is required to execute the device kernels on. The output files are generated in the ascii VTK format readable by the paraview which is an open-source visualisation package found via <https://www.paraview.org/download/>.
 
