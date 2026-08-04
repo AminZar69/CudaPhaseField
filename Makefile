@@ -29,32 +29,59 @@ gpu_target := cc61
 # Usage: make               -> release (default)
 #        make BUILD=debug   -> debug
 #        make BUILD=release -> release, explicitly
+#        make BUILD=safe    -> safe (see note below -- use this if double
+#                               precision misbehaves under release)
 #
 # release: optimized, no debug info, no runtime checks -- for actual runs.
 # debug:   unoptimized, host + device debug info, array-bounds and pointer
 #          checks on -- for tracking down crashes/wrong-answers with
 #          cuda-gdb or a plain debugger. Notably slower to run.
+# safe:    WORKAROUND for a confirmed double-precision correctness bug on this
+#          GPU/toolchain combination (Quadro P4000 / Pascal / cc61, nvfortran
+#          26.5 host compiler paired with an external CUDA 12.2 device toolkit
+#          via NVHPC_CUDA_HOME -- see the note above `NVHPC_CUDA_HOME` for why
+#          that pairing exists). With fp_kind set to double precision in
+#          precision_m.f90, `release` silently produces wrong results: the
+#          velocity field goes to Inf/NaN within roughly the first 1000
+#          timesteps, even though phi3/mass stay sane, so it's easy to miss if
+#          you're not watching closely. This was bisected across every
+#          optimization level (-O1 through -O3 -fast, with and without
+#          -Kieee) -- all of them are wrong. Only turning off optimization on
+#          BOTH the host (-O0) AND the device side (-gpu=...,debug) together
+#          fixes it; either alone is not enough. Root cause is believed to be
+#          specific to double-precision codegen on this particular
+#          host-compiler/external-device-toolkit pairing, not the source code.
+#          If you switch fp_kind to single precision, `release` is fine as-is
+#          and `safe` isn't needed.
+#
+#          When to reach for this: if you're running double precision and see
+#          NaN/Inf (or suspiciously exact-zero velocities) in release's
+#          output, rebuild with `make BUILD=safe` and confirm the numbers look
+#          physically sane again before trusting a result.
 BUILD ?= release
 
 srcdir := src
 # Object files (and, via -module below, .mod files) are kept per-build-mode
-# (obj/release, obj/debug) so switching between `make` and `make BUILD=debug`
-# never links stale objects built with different flags, and .mod files from one
-# mode never get picked up while compiling the other. This also keeps .mod files
-# out of the project root entirely. The final binary always lands at
-# bin/phasefield either way, so `cd bin && ./phasefield` keeps working regardless
-# of which mode produced it.
+# (obj/release, obj/debug, obj/safe) so switching between modes never links
+# stale objects built with different flags, and .mod files from one mode never
+# get picked up while compiling another. This also keeps .mod files out of the
+# project root entirely. The final binary always lands at bin/phasefield either
+# way, so `cd bin && ./phasefield` keeps working regardless of which mode
+# produced it.
 objdir := obj/$(BUILD)
 bindir := bin
 
 ifeq ($(BUILD),debug)
 	optflags := -O0 -g -Mbounds -Mchkptr -traceback
 	gpu_extra := ,debug,lineinfo
+else ifeq ($(BUILD),safe)
+	optflags := -O0
+	gpu_extra := ,debug
 else ifeq ($(BUILD),release)
 	optflags := -O3 -fast
 	gpu_extra :=
 else
-	$(error Unknown BUILD '$(BUILD)' -- use BUILD=release or BUILD=debug)
+	$(error Unknown BUILD '$(BUILD)' -- use BUILD=release, BUILD=debug, or BUILD=safe)
 endif
 
 cudaflags := -cuda -gpu=$(gpu_target)$(gpu_extra) $(optflags) -module $(objdir)

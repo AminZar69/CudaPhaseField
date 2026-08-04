@@ -20,27 +20,27 @@
 module device_var
     use precision_m
     implicit none
-	integer, constant, parameter :: nxd = 1022
-	integer, constant, parameter ::	nyd = 1022
-	real(fp_kind), constant, parameter :: density(3) = [1000., 500., 1.]
+	integer, constant, parameter :: nxd = 254
+	integer, constant, parameter ::	nyd = 254
+	real(fp_kind), constant, parameter :: density(3) = [1000._fp_kind, 500.0_fp_kind, 100.0_fp_kind]
     integer, constant, parameter :: ex(0:8) = [0, 1, 0,-1, 0, 1,-1,-1, 1]
     integer, constant, parameter :: ey(0:8) = [0, 0, 1, 0,-1, 1, 1,-1,-1]
-    real(fp_kind), constant, parameter :: wa(0:8) = [16,4, 4, 4, 4, 1, 1, 1, 1] / 36.
-    real(fp_kind), constant,parameter :: w = 4.
-	real(fp_kind),constant, parameter :: m = 0.01
-	real(fp_kind),constant, parameter :: w_c = 1./(0.5 + 3.*m)
-    real(fp_kind),parameter :: tau1  = 0.9
-    real(fp_kind),parameter :: tau2  = 0.8
-    real(fp_kind),parameter :: tau3  = 0.95
-    real(fp_kind),parameter :: sigma(3,3) = reshape((/0.1, 0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1/), (/3,3/))
+    real(fp_kind), constant, parameter :: wa(0:8) = [16,4, 4, 4, 4, 1, 1, 1, 1] / 36._fp_kind
+    real(fp_kind), constant,parameter :: w = 4._fp_kind
+	real(fp_kind),constant, parameter :: m = 0.01_fp_kind
+	real(fp_kind),constant, parameter :: w_c = 1._fp_kind/(0.5_fp_kind + 3._fp_kind*m)
+    real(fp_kind),parameter :: tau1  = 0.9_fp_kind
+    real(fp_kind),parameter :: tau2  = 0.9_fp_kind
+    real(fp_kind),parameter :: tau3  = 0.9_fp_kind
+    real(fp_kind),parameter :: sigma(3,3) = reshape((/0.1_fp_kind, 0.1_fp_kind,0.1_fp_kind,0.1_fp_kind,0.1_fp_kind,0.1_fp_kind,0.1_fp_kind,0.1_fp_kind,0.1_fp_kind/), (/3,3/))
     real(fp_kind), constant, parameter :: landa(3) = [(sigma(2,1) +  &
         sigma(3,1) &
         - sigma(3,2)) &
         , (sigma(2,1) + sigma(3,2) - sigma(3,1)) &
         , (sigma(3,1) + sigma(3,2) - sigma(2,1)) ]
-    real(fp_kind), constant, parameter :: landat = 3. / ((1. / landa(1)) &
-        + (1. / landa(2)) + (1. / landa(3)))
-    real(fp_kind),parameter :: pi = acos(-1.)
+    real(fp_kind), constant, parameter :: landat = 3._fp_kind / ((1._fp_kind / landa(1)) &
+        + (1._fp_kind / landa(2)) + (1._fp_kind / landa(3)))
+    real(fp_kind),parameter :: pi = acos(-1._fp_kind)
     
    
 	

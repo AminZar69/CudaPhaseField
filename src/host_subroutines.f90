@@ -349,14 +349,14 @@ contains
 
     do y = 1, ny
         do x = 1, nx
-            dphidxhost(1,x,y) = (phi1_host(x+1,y) - phi1_host(x-1,y))/3. + ( phi1_host(x+1,y-1) + phi1_host(x+1,y+1) - phi1_host(x-1,y-1) - phi1_host(x-1,y+1))/12.
-            dphidyhost(1,x,y) = (phi1_host(x,y+1) - phi1_host(x,y-1))/3. + ( phi1_host(x-1,y+1) + phi1_host(x+1,y+1) - phi1_host(x-1,y-1) - phi1_host(x+1,y-1))/12.
+            dphidxhost(1,x,y) = (phi1_host(x+1,y) - phi1_host(x-1,y))/3._fp_kind + ( phi1_host(x+1,y-1) + phi1_host(x+1,y+1) - phi1_host(x-1,y-1) - phi1_host(x-1,y+1))/12._fp_kind
+            dphidyhost(1,x,y) = (phi1_host(x,y+1) - phi1_host(x,y-1))/3._fp_kind + ( phi1_host(x-1,y+1) + phi1_host(x+1,y+1) - phi1_host(x-1,y-1) - phi1_host(x+1,y-1))/12._fp_kind
 			
-			dphidxhost(2,x,y) = (phi2_host(x+1,y) - phi2_host(x-1,y))/3. + ( phi2_host(x+1,y-1) + phi2_host(x+1,y+1) - phi2_host(x-1,y-1) - phi2_host(x-1,y+1))/12.
-            dphidyhost(2,x,y) = (phi2_host(x,y+1) - phi2_host(x,y-1))/3. + ( phi2_host(x-1,y+1) + phi2_host(x+1,y+1) - phi2_host(x-1,y-1) - phi2_host(x+1,y-1))/12.
+			dphidxhost(2,x,y) = (phi2_host(x+1,y) - phi2_host(x-1,y))/3._fp_kind + ( phi2_host(x+1,y-1) + phi2_host(x+1,y+1) - phi2_host(x-1,y-1) - phi2_host(x-1,y+1))/12._fp_kind
+            dphidyhost(2,x,y) = (phi2_host(x,y+1) - phi2_host(x,y-1))/3._fp_kind + ( phi2_host(x-1,y+1) + phi2_host(x+1,y+1) - phi2_host(x-1,y-1) - phi2_host(x+1,y-1))/12._fp_kind
 			
-			dphidxhost(3,x,y) = (phi3_host(x+1,y) - phi3_host(x-1,y))/3. + ( phi3_host(x+1,y-1) + phi3_host(x+1,y+1) - phi3_host(x-1,y-1) - phi3_host(x-1,y+1))/12.
-            dphidyhost(3,x,y) = (phi3_host(x,y+1) - phi3_host(x,y-1))/3. + ( phi3_host(x-1,y+1) + phi3_host(x+1,y+1) - phi3_host(x-1,y-1) - phi3_host(x+1,y-1))/12.
+			dphidxhost(3,x,y) = (phi3_host(x+1,y) - phi3_host(x-1,y))/3._fp_kind + ( phi3_host(x+1,y-1) + phi3_host(x+1,y+1) - phi3_host(x-1,y-1) - phi3_host(x-1,y+1))/12._fp_kind
+            dphidyhost(3,x,y) = (phi3_host(x,y+1) - phi3_host(x,y-1))/3._fp_kind + ( phi3_host(x-1,y+1) + phi3_host(x+1,y+1) - phi3_host(x-1,y-1) - phi3_host(x+1,y-1))/12._fp_kind
         end do
     end do
 	end
@@ -369,12 +369,12 @@ contains
     do y = 1, ny
         do x = 1, nx
             do o = 1, 3
-                tmphost(o) = sqrt( dphidxhost(o,x,y)**2. + dphidyhost(o,x,y)**2. )
+                tmphost(o) = sqrt( dphidxhost(o,x,y)**2._fp_kind + dphidyhost(o,x,y)**2._fp_kind )
                 if(tmphost(o)>0) then
                     nihost(o,x,y) = dphidxhost(o,x,y) / tmphost(o)
                     njhost(o,x,y) = dphidyhost(o,x,y) / tmphost(o)
                 else
-                    tmphost(o) = sqrt( dphidxhost(o,x,y)**2 + dphidyhost(o,x,y)**2 + 1e-32 )
+                    tmphost(o) = sqrt( dphidxhost(o,x,y)**2 + dphidyhost(o,x,y)**2 + 1e-32_fp_kind )
                     nihost(o,x,y) = dphidxhost(o,x,y) / tmphost(o)
                     njhost(o,x,y) = dphidyhost(o,x,y) / tmphost(o)
                 end if
@@ -392,7 +392,7 @@ contains
 		real(fp_kind) :: u2, eu(0:8)
 		u2 = u*u + v*v
 		eu(:) = exhost(:) * u  + eyhost(:) * v
-		ga_wa(:) = wahost(:) * ( eu(:)*(3. + 4.5*eu(:)) - 1.5*u2 )
+		ga_wa(:) = wahost(:) * ( eu(:)*(3._fp_kind + 4.5_fp_kind*eu(:)) - 1.5_fp_kind*u2 )
 
 	end
 !!!*************************************************************************************************************!!!
@@ -406,14 +406,14 @@ contains
     do y = 0, ny+1  
         do x = 0, nx+1 
             if(is_solid_nodehost(x,y)==0) then
-				ri(1) = sqrt( (x-((nx/2.-r)))**2. + (y-(ny/2.))**2. )
-				ri(2) = sqrt( (x-(nx/2.+r))**2.+ (y-(ny/2.))**2. )
+				ri(1) = sqrt( (x-((nx/2._fp_kind-r)))**2._fp_kind + (y-(ny/2._fp_kind))**2._fp_kind )
+				ri(2) = sqrt( (x-(nx/2._fp_kind+r))**2._fp_kind+ (y-(ny/2._fp_kind))**2._fp_kind )
 
-				phi1_host(x,y) = 0.5 + 0.5 * tanh(2.*(r-ri(1))/whost) 
+				phi1_host(x,y) = 0.5_fp_kind + 0.5_fp_kind * tanh(2._fp_kind*(r-ri(1))/whost) 
 
-				phi2_host(x,y) = 0.5 + 0.5 * tanh(2.*(r-ri(2))/whost)  
+				phi2_host(x,y) = 0.5_fp_kind + 0.5_fp_kind * tanh(2._fp_kind*(r-ri(2))/whost)  
 
-				phi3_host(x,y) = 1. - phi1_host(x,y) - phi2_host(x,y)
+				phi3_host(x,y) = 1._fp_kind - phi1_host(x,y) - phi2_host(x,y)
 								
             end if
             rhohost(x,y) = phi1_host(x,y) * density_host(1) + phi2_host(x,y) * density_host(2) + phi3_host(x,y) * density_host(3)
@@ -424,9 +424,9 @@ contains
 	call periodic_phi_host( phi3_host )
     call phi_gradient_host
     call interface_cal_host
-    phost=0.0
-    uxhost=0.0
-    uyhost=0.0
+    phost=0.0_fp_kind
+    uxhost=0.0_fp_kind
+    uyhost=0.0_fp_kind
 	! h10_host = 0
 	! h11_host = 0
 	! h12_host = 0
@@ -462,38 +462,38 @@ contains
             call equilibrium_host( uxhost(x,y), uyhost(x,y), ga_wa )
             gammahost(:) = ga_wa(:) + wahost(:)
             !*******************    heq
-            efhhost(1,:)  = 2. * ((4./whost) * abs(phi1_host(x,y) * (1. - phi1_host(x,y))) * (exhost(:) * nihost(1,x,y) + eyhost(:) * njhost(1,x,y))) &
-                - ((4./whost) * abs(phi2_host(x,y) * (1. - phi2_host(x,y))) * (exhost(:) * nihost(2,x,y) + eyhost(:) * njhost(2,x,y)) &
-                + (4./whost) * abs(phi3_host(x,y) * (1. - phi3_host(x,y))) * (exhost(:) * nihost(3,x,y) + eyhost(:) * njhost(3,x,y)))
-            efhhost(2,:)  = 2. * ((4./whost) * abs(phi2_host(x,y) * (1. - phi2_host(x,y))) * (exhost(:) * nihost(2,x,y) + eyhost(:) * njhost(2,x,y))) &
-                - ((4./whost) * abs(phi1_host(x,y) * (1. - phi1_host(x,y))) * (exhost(:) * nihost(1,x,y) + eyhost(:) * njhost(1,x,y)) &
-                + (4./whost) * abs(phi3_host(x,y) * (1. - phi3_host(x,y))) * (exhost(:) * nihost(3,x,y) + eyhost(:) * njhost(3,x,y)))
+            efhhost(1,:)  = 2._fp_kind * ((4._fp_kind/whost) * abs(phi1_host(x,y) * (1._fp_kind - phi1_host(x,y))) * (exhost(:) * nihost(1,x,y) + eyhost(:) * njhost(1,x,y))) &
+                - ((4._fp_kind/whost) * abs(phi2_host(x,y) * (1._fp_kind - phi2_host(x,y))) * (exhost(:) * nihost(2,x,y) + eyhost(:) * njhost(2,x,y)) &
+                + (4._fp_kind/whost) * abs(phi3_host(x,y) * (1._fp_kind - phi3_host(x,y))) * (exhost(:) * nihost(3,x,y) + eyhost(:) * njhost(3,x,y)))
+            efhhost(2,:)  = 2._fp_kind * ((4._fp_kind/whost) * abs(phi2_host(x,y) * (1._fp_kind - phi2_host(x,y))) * (exhost(:) * nihost(2,x,y) + eyhost(:) * njhost(2,x,y))) &
+                - ((4._fp_kind/whost) * abs(phi1_host(x,y) * (1._fp_kind - phi1_host(x,y))) * (exhost(:) * nihost(1,x,y) + eyhost(:) * njhost(1,x,y)) &
+                + (4._fp_kind/whost) * abs(phi3_host(x,y) * (1._fp_kind - phi3_host(x,y))) * (exhost(:) * nihost(3,x,y) + eyhost(:) * njhost(3,x,y)))
             do i=1,2
-                hlphhost(i,:) = wahost(:) * efhhost(i,:) / 3.
+                hlphhost(i,:) = wahost(:) * efhhost(i,:) / 3._fp_kind
 			end do
 			
 			
 			
-			h1_host(x,y,0) = phi1_host(x,y) * gammahost(0) - 0.5 * hlphhost(1,0)
-			h1_host(x,y,1) = phi1_host(x,y) * gammahost(1) - 0.5 * hlphhost(1,1)
-			h1_host(x,y,2) = phi1_host(x,y) * gammahost(2) - 0.5 * hlphhost(1,2)
-			h1_host(x,y,3) = phi1_host(x,y) * gammahost(3) - 0.5 * hlphhost(1,3)
-			h1_host(x,y,4) = phi1_host(x,y) * gammahost(4) - 0.5 * hlphhost(1,4)
-			h1_host(x,y,5) = phi1_host(x,y) * gammahost(5) - 0.5 * hlphhost(1,5)
-			h1_host(x,y,6) = phi1_host(x,y) * gammahost(6) - 0.5 * hlphhost(1,6)
-			h1_host(x,y,7) = phi1_host(x,y) * gammahost(7) - 0.5 * hlphhost(1,7)
-			h1_host(x,y,8) = phi1_host(x,y) * gammahost(8) - 0.5 * hlphhost(1,8)
+			h1_host(x,y,0) = phi1_host(x,y) * gammahost(0) - 0.5_fp_kind * hlphhost(1,0)
+			h1_host(x,y,1) = phi1_host(x,y) * gammahost(1) - 0.5_fp_kind * hlphhost(1,1)
+			h1_host(x,y,2) = phi1_host(x,y) * gammahost(2) - 0.5_fp_kind * hlphhost(1,2)
+			h1_host(x,y,3) = phi1_host(x,y) * gammahost(3) - 0.5_fp_kind * hlphhost(1,3)
+			h1_host(x,y,4) = phi1_host(x,y) * gammahost(4) - 0.5_fp_kind * hlphhost(1,4)
+			h1_host(x,y,5) = phi1_host(x,y) * gammahost(5) - 0.5_fp_kind * hlphhost(1,5)
+			h1_host(x,y,6) = phi1_host(x,y) * gammahost(6) - 0.5_fp_kind * hlphhost(1,6)
+			h1_host(x,y,7) = phi1_host(x,y) * gammahost(7) - 0.5_fp_kind * hlphhost(1,7)
+			h1_host(x,y,8) = phi1_host(x,y) * gammahost(8) - 0.5_fp_kind * hlphhost(1,8)
 			
 			
-			h2_host(x,y,0) = phi2_host(x,y) * gammahost(0) - 0.5 * hlphhost(2,0)
-			h2_host(x,y,1) = phi2_host(x,y) * gammahost(1) - 0.5 * hlphhost(2,1)
-			h2_host(x,y,2) = phi2_host(x,y) * gammahost(2) - 0.5 * hlphhost(2,2)
-			h2_host(x,y,3) = phi2_host(x,y) * gammahost(3) - 0.5 * hlphhost(2,3)
-			h2_host(x,y,4) = phi2_host(x,y) * gammahost(4) - 0.5 * hlphhost(2,4)
-			h2_host(x,y,5) = phi2_host(x,y) * gammahost(5) - 0.5 * hlphhost(2,5)
-			h2_host(x,y,6) = phi2_host(x,y) * gammahost(6) - 0.5 * hlphhost(2,6)
-			h2_host(x,y,7) = phi2_host(x,y) * gammahost(7) - 0.5 * hlphhost(2,7)
-			h2_host(x,y,8) = phi2_host(x,y) * gammahost(8) - 0.5 * hlphhost(2,8)
+			h2_host(x,y,0) = phi2_host(x,y) * gammahost(0) - 0.5_fp_kind * hlphhost(2,0)
+			h2_host(x,y,1) = phi2_host(x,y) * gammahost(1) - 0.5_fp_kind * hlphhost(2,1)
+			h2_host(x,y,2) = phi2_host(x,y) * gammahost(2) - 0.5_fp_kind * hlphhost(2,2)
+			h2_host(x,y,3) = phi2_host(x,y) * gammahost(3) - 0.5_fp_kind * hlphhost(2,3)
+			h2_host(x,y,4) = phi2_host(x,y) * gammahost(4) - 0.5_fp_kind * hlphhost(2,4)
+			h2_host(x,y,5) = phi2_host(x,y) * gammahost(5) - 0.5_fp_kind * hlphhost(2,5)
+			h2_host(x,y,6) = phi2_host(x,y) * gammahost(6) - 0.5_fp_kind * hlphhost(2,6)
+			h2_host(x,y,7) = phi2_host(x,y) * gammahost(7) - 0.5_fp_kind * hlphhost(2,7)
+			h2_host(x,y,8) = phi2_host(x,y) * gammahost(8) - 0.5_fp_kind * hlphhost(2,8)
             
             !*******************    geq
             g_host(x,y,0) = phost(x,y) * wahost(0) + ga_wa(0)
@@ -608,6 +608,16 @@ contains
     end do
     !END DO
     write (1,'(A)') '</DataArray>'
+	
+	write (1,'(A)') '<DataArray type="Float32" Name="phi3" NumberOfComponents="1" format="ascii">'
+    !!Do Z= 1, lz
+    do y= 1, ny
+        do x= 1, nx
+            write (1,*) phi3_host(x,y)
+        end do
+    end do
+    !END DO
+    write (1,'(A)') '</DataArray>'
 
     WRITE (1,'(A)') '<DataArray type="Float32" Name="Velocity" NumberOfComponents="3" format="ascii">'
     !Do Z= 1, 1
@@ -622,7 +632,7 @@ contains
     !Do Z= 1, lz
     do y= 1, ny
         do x= 1, nx
-            write (1,*) phost(x,y)*rhohost(x,y)/3.
+            write (1,*) phost(x,y)*rhohost(x,y)/3._fp_kind
         end do
     end do
     !END DO
@@ -633,6 +643,8 @@ contains
     write (1,'(A)') '</Piece>'
     write (1,'(A)') '</RectilinearGrid>'
     write (1,'(A)') '</VTKFile>'
+
+	close(1)
 
 	end
 !!!*************************************************************************************************************!!!
