@@ -6,6 +6,18 @@ cc := nvfortran
 # recognize them as Fortran), -cuda must be passed explicitly on every compile
 # step that contains CUDA Fortran code, not just at link time.
 #
+#
+# gpu_target must match the compute capability of the GPU you're building for
+# (check with `nvaccelinfo`) -- currently set for an H100 (Hopper, cc90).
+# If you're on an older architecture whose codegen support has been dropped
+# from your HPC SDK's bundled CUDA toolkit (this happened to Maxwell/Pascal/
+# Volta as of CUDA 13.x), you may additionally need to point nvfortran at an
+# external, older CUDA toolkit via the NVHPC_CUDA_HOME environment variable --
+# see this repo's history/README for the details of that workaround; it is
+# NOT needed for current-generation architectures like this one.
+#gpu_target := cc90
+#
+#
 # This target GPU is a Quadro P4000 (Pascal, compute capability 6.1). This specific
 # HPC SDK 26.5 install only bundles CUDA 13.2 (check with:
 # `find / -path '*hpc_sdk*/cuda/*' -maxdepth 8` -- if you see other X.Y folders under
@@ -29,35 +41,11 @@ gpu_target := cc61
 # Usage: make               -> release (default)
 #        make BUILD=debug   -> debug
 #        make BUILD=release -> release, explicitly
-#        make BUILD=safe    -> safe (see note below -- use this if double
-#                               precision misbehaves under release)
 #
 # release: optimized, no debug info, no runtime checks -- for actual runs.
 # debug:   unoptimized, host + device debug info, array-bounds and pointer
 #          checks on -- for tracking down crashes/wrong-answers with
 #          cuda-gdb or a plain debugger. Notably slower to run.
-# safe:    WORKAROUND for a confirmed double-precision correctness bug on this
-#          GPU/toolchain combination (Quadro P4000 / Pascal / cc61, nvfortran
-#          26.5 host compiler paired with an external CUDA 12.2 device toolkit
-#          via NVHPC_CUDA_HOME -- see the note above `NVHPC_CUDA_HOME` for why
-#          that pairing exists). With fp_kind set to double precision in
-#          precision_m.f90, `release` silently produces wrong results: the
-#          velocity field goes to Inf/NaN within roughly the first 1000
-#          timesteps, even though phi3/mass stay sane, so it's easy to miss if
-#          you're not watching closely. This was bisected across every
-#          optimization level (-O1 through -O3 -fast, with and without
-#          -Kieee) -- all of them are wrong. Only turning off optimization on
-#          BOTH the host (-O0) AND the device side (-gpu=...,debug) together
-#          fixes it; either alone is not enough. Root cause is believed to be
-#          specific to double-precision codegen on this particular
-#          host-compiler/external-device-toolkit pairing, not the source code.
-#          If you switch fp_kind to single precision, `release` is fine as-is
-#          and `safe` isn't needed.
-#
-#          When to reach for this: if you're running double precision and see
-#          NaN/Inf (or suspiciously exact-zero velocities) in release's
-#          output, rebuild with `make BUILD=safe` and confirm the numbers look
-#          physically sane again before trusting a result.
 BUILD ?= release
 
 srcdir := src
@@ -74,18 +62,18 @@ bindir := bin
 ifeq ($(BUILD),debug)
 	optflags := -O0 -g -Mbounds -Mchkptr -traceback
 	gpu_extra := ,debug,lineinfo
-else ifeq ($(BUILD),safe)
-	optflags := -O0
-	gpu_extra := ,debug
 else ifeq ($(BUILD),release)
 	optflags := -O3 -fast
 	gpu_extra :=
 else
-	$(error Unknown BUILD '$(BUILD)' -- use BUILD=release, BUILD=debug, or BUILD=safe)
+	$(error Unknown BUILD '$(BUILD)' -- use BUILD=release or BUILD=debug)
 endif
 
-cudaflags := -cuda -gpu=$(gpu_target)$(gpu_extra) $(optflags) -module $(objdir)
-ldflags := -cuda -gpu=$(gpu_target)$(gpu_extra) $(optflags)
+# maxregcount:64 is not a diagnostic flag -- it's the permanent fix for the
+# collision_h register-overshoot bug documented above, and applies to every
+# build mode so no kernel can silently fail to launch regardless of BUILD.
+cudaflags := -cuda -gpu=$(gpu_target),maxregcount:64$(gpu_extra) $(optflags) -module $(objdir)
+ldflags := -cuda -gpu=$(gpu_target),maxregcount:64$(gpu_extra) $(optflags)
 # -------------------------------------------------------------------------------
 
 objects	:= $(objdir)/precision_m.o $(objdir)/host_var.o $(objdir)/device_var.o $(objdir)/host_subroutines.o $(objdir)/global_subroutines.o $(objdir)/main.o 
