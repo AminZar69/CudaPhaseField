@@ -61,10 +61,8 @@ call collision_h<<<grid,tblock>>>
 call collision_g1<<<grid,tblock>>>
 call collision_g2<<<grid,tblock>>>
 call periodic_f<<<grid,tblock>>>
-call propagation_h<<<grid,tblock>>>
-call propagation_h2<<<grid,tblock>>>
-call propagation_g<<<grid,tblock>>>
-call propagation_g2<<<grid,tblock>>>
+call propagation_gather<<<grid,tblock>>>
+call propagation_scatter<<<grid,tblock>>>
 
     if( mod(t,1000)==0 .or. mod(t,step)==0 )then
             phi1_host = phi1

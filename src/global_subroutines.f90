@@ -1156,18 +1156,16 @@ contains
 	
 	end
 	
-	attributes(global) subroutine propagation_h
+	attributes(global) subroutine propagation_gather
 		use precision_m
-		use device_var!, only : nxd, nyd, ux, ex, ey, h, htemp
+		use device_var
 		implicit none
-		integer :: x, y, n(3)
-		
+		integer :: x, y, n(2)
 		
 		x = (blockIdx%x-1)*blockDim%x + threadIdx%x
 		y = (blockIdx%y-1)*blockDim%y + threadIdx%y
-		!z = (blockIdx%z-1)*blockDim%z + threadIdx%z
-		n(1) = nxd!size(htemp,3)
-		n(2) = nyd!size(htemp,4)
+		n(1) = nxd
+		n(2) = nyd
 		
 		if (x<=n(1) .and. x>=1 .and. y>=1 .and.  y<=n(2)) then
 
@@ -1180,8 +1178,6 @@ contains
 			htemp17(x,y) = h1(x-ex(7),y-ey(7),7)
 			htemp18(x,y) = h1(x-ex(8),y-ey(8),8)
 			
-			
-			
 			htemp21(x,y) = h2(x-ex(1),y-ey(1),1)
 			htemp22(x,y) = h2(x-ex(2),y-ey(2),2)
 			htemp23(x,y) = h2(x-ex(3),y-ey(3),3)
@@ -1190,78 +1186,6 @@ contains
 			htemp26(x,y) = h2(x-ex(6),y-ey(6),6)
 			htemp27(x,y) = h2(x-ex(7),y-ey(7),7)
 			htemp28(x,y) = h2(x-ex(8),y-ey(8),8)
-					
-					
-			
-		end if
-		
-		
-		
-	end
-	
-	attributes(global) subroutine propagation_h2
-		use precision_m
-		use device_var!, only : nxd, nyd, ux, ex, ey, h, htemp
-		implicit none
-		!real(fp_kind), dimension(:,:,:,:), intent(in) :: amin!(2,1:8,nxd,nyd)
-		!real(fp_kind) :: hnew(2,8,nxd,nyd)
-		integer :: x, y, n(3)
-		
-		x = (blockIdx%x-1)*blockDim%x + threadIdx%x
-		y = (blockIdx%y-1)*blockDim%y + threadIdx%y
-		!z = (blockIdx%z-1)*blockDim%z + threadIdx%z
-		n(1) = nxd!size(htemp,3)
-		n(2) = nyd!size(htemp,4)
-		!n(3) = size(hnew,2)
-		if (x<=n(1) .and. x>=1 .and. y>=1 .and.  y<=n(2)) then
-
-				
-										
-			h1(x,y,1) = htemp11(x,y)
-			h1(x,y,2) = htemp12(x,y)
-			h1(x,y,3) = htemp13(x,y)
-			h1(x,y,4) = htemp14(x,y)
-			h1(x,y,5) = htemp15(x,y)
-			h1(x,y,6) = htemp16(x,y)
-			h1(x,y,7) = htemp17(x,y)
-			h1(x,y,8) = htemp18(x,y)
-			
-			
-			
-			h2(x,y,1) = htemp21(x,y)
-			h2(x,y,2) = htemp22(x,y)
-			h2(x,y,3) = htemp23(x,y)
-			h2(x,y,4) = htemp24(x,y)
-			h2(x,y,5) = htemp25(x,y)
-			h2(x,y,6) = htemp26(x,y)
-			h2(x,y,7) = htemp27(x,y)
-			h2(x,y,8) = htemp28(x,y)
-										
-			
-				
-			
-		end if
-		
-		
-		
-	end
-	
-	attributes(global) subroutine propagation_g
-		use precision_m
-		use device_var, only : nxd, nyd, ux, ex, ey, gtemp1, gtemp2, gtemp3, gtemp4, gtemp5, gtemp6, gtemp7, gtemp8, g
-		implicit none
-		integer :: x, y, n(3)
-		
-		
-		x = (blockIdx%x-1)*blockDim%x + threadIdx%x
-		y = (blockIdx%y-1)*blockDim%y + threadIdx%y
-		n(1) = nxd!size(gtemp,2)
-		n(2) = nyd!size(gtemp,3)
-		
-		!if (x<=n(1) .and. y<=n(2)) then
-		if (x<=n(1) .and. x>=1 .and. y>=1 .and.  y<=n(2)) then
-
-			
 
 			gtemp1(x,y) = g(x-ex(1),y-ey(1),1)
 			gtemp2(x,y) = g(x-ex(2),y-ey(2),2)
@@ -1272,52 +1196,51 @@ contains
 			gtemp7(x,y) = g(x-ex(7),y-ey(7),7)
 			gtemp8(x,y) = g(x-ex(8),y-ey(8),8)
 			
-				
-				
-		
-			
-			
 		end if
-		
 		
 	end
 	
-	attributes(global) subroutine propagation_g2
+	attributes(global) subroutine propagation_scatter
 		use precision_m
-		use device_var, only : nxd, nyd, ux, ex, ey, gtemp1, gtemp2, gtemp3, gtemp4, gtemp5, gtemp6, gtemp7, gtemp8, g
+		use device_var
 		implicit none
-		!real(fp_kind), intent(inout) :: g(0:8,0:nxd+1,0:nyd+1)
-		!real(fp_kind) :: gnew(8,nxd,nyd)
-		integer :: x, y, n(3)
+		integer :: x, y, n(2)
 		
 		x = (blockIdx%x-1)*blockDim%x + threadIdx%x
 		y = (blockIdx%y-1)*blockDim%y + threadIdx%y
-		!z = (blockIdx%z-1)*blockDim%z + threadIdx%z
-		n(1) = nxd!size(gtemp,2)
-		n(2) = nyd!size(gtemp,3)
-		!n(3) = size(hnew,2)
-		!if (x<=n(1) .and. y<=n(2)) then
+		n(1) = nxd
+		n(2) = nyd
+		
 		if (x<=n(1) .and. x>=1 .and. y>=1 .and.  y<=n(2)) then
 
+			h1(x,y,1) = htemp11(x,y)
+			h1(x,y,2) = htemp12(x,y)
+			h1(x,y,3) = htemp13(x,y)
+			h1(x,y,4) = htemp14(x,y)
+			h1(x,y,5) = htemp15(x,y)
+			h1(x,y,6) = htemp16(x,y)
+			h1(x,y,7) = htemp17(x,y)
+			h1(x,y,8) = htemp18(x,y)
 			
+			h2(x,y,1) = htemp21(x,y)
+			h2(x,y,2) = htemp22(x,y)
+			h2(x,y,3) = htemp23(x,y)
+			h2(x,y,4) = htemp24(x,y)
+			h2(x,y,5) = htemp25(x,y)
+			h2(x,y,6) = htemp26(x,y)
+			h2(x,y,7) = htemp27(x,y)
+			h2(x,y,8) = htemp28(x,y)
 
-			
-			g(x,y,1) =gtemp1(x,y)
-			g(x,y,2) =gtemp2(x,y)
-			g(x,y,3) =gtemp3(x,y)
-			g(x,y,4) =gtemp4(x,y)
-			g(x,y,5) =gtemp5(x,y)
-			g(x,y,6) =gtemp6(x,y)
-			g(x,y,7) =gtemp7(x,y)
-			g(x,y,8) =gtemp8(x,y)
-				
-										
-										
-			
-			
+			g(x,y,1) = gtemp1(x,y)
+			g(x,y,2) = gtemp2(x,y)
+			g(x,y,3) = gtemp3(x,y)
+			g(x,y,4) = gtemp4(x,y)
+			g(x,y,5) = gtemp5(x,y)
+			g(x,y,6) = gtemp6(x,y)
+			g(x,y,7) = gtemp7(x,y)
+			g(x,y,8) = gtemp8(x,y)
 			
 		end if
-		
 		
 	end
 end
