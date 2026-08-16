@@ -33,13 +33,13 @@ module device_var
     real(fp_kind),parameter :: tau2  = 0.9_fp_kind
     real(fp_kind),parameter :: tau3  = 0.9_fp_kind
     real(fp_kind),parameter :: sigma(3,3) = reshape((/0.1_fp_kind, 0.1_fp_kind,0.1_fp_kind,0.1_fp_kind,0.1_fp_kind,0.1_fp_kind,0.1_fp_kind,0.1_fp_kind,0.1_fp_kind/), (/3,3/))
-    real(fp_kind), constant, parameter :: landa(3) = [(sigma(2,1) +  &
+    real(fp_kind), constant, parameter :: lambda(3) = [(sigma(2,1) +  &
         sigma(3,1) &
         - sigma(3,2)) &
         , (sigma(2,1) + sigma(3,2) - sigma(3,1)) &
         , (sigma(3,1) + sigma(3,2) - sigma(2,1)) ]
-    real(fp_kind), constant, parameter :: landat = 3._fp_kind / ((1._fp_kind / landa(1)) &
-        + (1._fp_kind / landa(2)) + (1._fp_kind / landa(3)))
+    real(fp_kind), constant, parameter :: lambdat = 3._fp_kind / ((1._fp_kind / lambda(1)) &
+        + (1._fp_kind / lambda(2)) + (1._fp_kind / lambda(3)))
     real(fp_kind),parameter :: pi = acos(-1._fp_kind)
     
    

@@ -246,7 +246,7 @@ contains
 	
 	attributes(global) subroutine chemical_potential
 		use precision_m
-		use device_var, only : nxd, nyd, landa, w, landat, d2phi1, d2phi2, d2phi3, phi1, phi2, phi3, mu1, mu2, mu3
+		use device_var, only : nxd, nyd, lambda, w, lambdat, d2phi1, d2phi2, d2phi3, phi1, phi2, phi3, mu1, mu2, mu3
 		implicit none
 		
 		! Same tiling pattern as gradient_cal: this kernel's Laplacian needs the
@@ -326,17 +326,17 @@ contains
 			
 		
 			
-			mu1(x,y) = (12._fp_kind / w) * (landa(1) * s_phi1(tx,ty) * (1._fp_kind- s_phi1(tx,ty)) * (1._fp_kind - 2._fp_kind * s_phi1(tx,ty))  &
-				- 2._fp_kind * landat * s_phi1(tx,ty) * s_phi2(tx,ty) * (1._fp_kind - s_phi1(tx,ty) - s_phi2(tx,ty))) &
-					- (3._fp_kind / 4._fp_kind) * w * landa(1) * d2phi1(x,y) !- 2.0d0 * s_phi1(tx,ty)**2.0d0
+			mu1(x,y) = (12._fp_kind / w) * (lambda(1) * s_phi1(tx,ty) * (1._fp_kind- s_phi1(tx,ty)) * (1._fp_kind - 2._fp_kind * s_phi1(tx,ty))  &
+				- 2._fp_kind * lambdat * s_phi1(tx,ty) * s_phi2(tx,ty) * (1._fp_kind - s_phi1(tx,ty) - s_phi2(tx,ty))) &
+					- (3._fp_kind / 4._fp_kind) * w * lambda(1) * d2phi1(x,y) !- 2.0d0 * s_phi1(tx,ty)**2.0d0
 					
-			mu2(x,y) = (12._fp_kind / w) * (landa(2) * s_phi2(tx,ty) * (1._fp_kind- s_phi2(tx,ty)) * (1._fp_kind - 2._fp_kind * s_phi2(tx,ty))  &
-				- 2._fp_kind * landat * s_phi1(tx,ty) * s_phi2(tx,ty) * (1._fp_kind - s_phi1(tx,ty) - s_phi2(tx,ty))) &
-					- (3._fp_kind / 4._fp_kind) * w * landa(2) * d2phi2(x,y) !- 2.0d0 * 0.03d0*s_phi2(tx,ty)**2.0d0
+			mu2(x,y) = (12._fp_kind / w) * (lambda(2) * s_phi2(tx,ty) * (1._fp_kind- s_phi2(tx,ty)) * (1._fp_kind - 2._fp_kind * s_phi2(tx,ty))  &
+				- 2._fp_kind * lambdat * s_phi1(tx,ty) * s_phi2(tx,ty) * (1._fp_kind - s_phi1(tx,ty) - s_phi2(tx,ty))) &
+					- (3._fp_kind / 4._fp_kind) * w * lambda(2) * d2phi2(x,y) !- 2.0d0 * 0.03d0*s_phi2(tx,ty)**2.0d0
 					
-			mu3(x,y) = (12._fp_kind / w) * (landa(3) * s_phi3(tx,ty) * (1._fp_kind- s_phi3(tx,ty)) * (1._fp_kind - 2._fp_kind * s_phi3(tx,ty))  &
-				- 2._fp_kind * landat * s_phi1(tx,ty) * s_phi2(tx,ty) * (1._fp_kind - s_phi1(tx,ty) - s_phi2(tx,ty))) &
-					- (3._fp_kind / 4._fp_kind) * w * landa(3) * d2phi3(x,y) !- 2.0d0 * 0.03d0*s_phi3(tx,ty)**2.0d0
+			mu3(x,y) = (12._fp_kind / w) * (lambda(3) * s_phi3(tx,ty) * (1._fp_kind- s_phi3(tx,ty)) * (1._fp_kind - 2._fp_kind * s_phi3(tx,ty))  &
+				- 2._fp_kind * lambdat * s_phi1(tx,ty) * s_phi2(tx,ty) * (1._fp_kind - s_phi1(tx,ty) - s_phi2(tx,ty))) &
+					- (3._fp_kind / 4._fp_kind) * w * lambda(3) * d2phi3(x,y) !- 2.0d0 * 0.03d0*s_phi3(tx,ty)**2.0d0
 					
 			
 						

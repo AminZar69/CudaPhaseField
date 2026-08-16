@@ -32,13 +32,13 @@ real(fp_kind),parameter :: wahost(0:8) = [16,4, 4, 4, 4, 1, 1, 1, 1] / 36._fp_ki
 real(fp_kind),parameter :: whost = 4._fp_kind
 real(fp_kind),parameter :: r = 35._fp_kind
 real(fp_kind),parameter :: sigmahost(3,3) = reshape((/0.1_fp_kind, 0.1_fp_kind,0.1_fp_kind,0.1_fp_kind,0.1_fp_kind,0.1_fp_kind,0.1_fp_kind,0.1_fp_kind,0.1_fp_kind/), (/3,3/))
-real(fp_kind),parameter :: landahost(3) = [(sigmahost(2,1) +  &
+real(fp_kind),parameter :: lambdahost(3) = [(sigmahost(2,1) +  &
         sigmahost(3,1) &
 - sigmahost(3,2)) &
         , (sigmahost(2,1) + sigmahost(3,2) - sigmahost(3,1)) &
         , (sigmahost(3,1) + sigmahost(3,2) - sigmahost(2,1)) ]
-real(fp_kind),parameter :: landathost = 3._fp_kind / ((1._fp_kind / landahost(1)) &
-+ (1._fp_kind / landahost(2)) + (1._fp_kind / landahost(3)))
+real(fp_kind),parameter :: lambdathost = 3._fp_kind / ((1._fp_kind / lambdahost(1)) &
++ (1._fp_kind / lambdahost(2)) + (1._fp_kind / lambdahost(3)))
 real(fp_kind),parameter :: pihost = acos(-1._fp_kind)
 integer, dimension(0:nx+1,0:ny+1) :: is_solid_nodehost
 real(fp_kind), dimension(3,nx,ny) :: dphidxhost, dphidyhost, nihost, njhost

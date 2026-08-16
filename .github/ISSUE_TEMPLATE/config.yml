@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Questions about installation or usage
+    url: https://github.com/AminZar69/CUdaPhaseField/discussions
+    about: For general questions rather than a specific bug or feature request, please use Discussions (or check the README's Requirements/Build sections first).
