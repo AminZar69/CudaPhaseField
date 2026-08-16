@@ -10,6 +10,9 @@ obj/
 *.cubin
 *.gpu
 
+# Personal, machine-specific build overrides (see Makefile.local.example)
+Makefile.local
+
 # CMake (in case CMake tooling is added/used alongside the Makefile)
 CMakeLists.txt.user
 CMakeCache.txt
