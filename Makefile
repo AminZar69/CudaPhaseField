@@ -5,37 +5,26 @@ cc := nvfortran
 # Fortran automatically; since these files are now plain .f90 (so editors/GitHub
 # recognize them as Fortran), -cuda must be passed explicitly on every compile
 # step that contains CUDA Fortran code, not just at link time.
-#
-#
-# gpu_target must match the compute capability of the GPU you're building for
-# (check with `nvaccelinfo`) -- currently set for an H100 (Hopper, cc90).
-# If you're on an older architecture whose codegen support has been dropped
-# from your HPC SDK's bundled CUDA toolkit (this happened to Maxwell/Pascal/
-# Volta as of CUDA 13.x), you may additionally need to point nvfortran at an
-# external, older CUDA toolkit via the NVHPC_CUDA_HOME environment variable --
-# see this repo's history/README for the details of that workaround; it is
-# NOT needed for current-generation architectures like this one.
-#gpu_target := cc90
-#
-#
-# This target GPU is a Quadro P4000 (Pascal, compute capability 6.1). This specific
-# HPC SDK 26.5 install only bundles CUDA 13.2 (check with:
-# `find / -path '*hpc_sdk*/cuda/*' -maxdepth 8` -- if you see other X.Y folders under
-# .../cuda/, a bundled -gpu=cudaX.Y may work instead and this whole workaround is
-# unnecessary). CUDA 13.x dropped Maxwell/Pascal/Volta device-code generation
-# entirely, so no -gpu=cudaX.Y value selects a working *bundled* toolkit here --
-# -gpu=cudaX.Y can only choose among toolkits shipped inside the HPC SDK itself.
-#
-# The fix: install a standalone CUDA 12.x toolkit (NOT part of the HPC SDK) --
-# e.g. CUDA 12.2, matching this driver's reported CUDA 12.2 compatibility -- from
-# https://developer.nvidia.com/cuda-toolkit-archive, then point nvfortran at it
-# via NVHPC_CUDA_HOME. When NVHPC_CUDA_HOME is set, drop cudaX.Y from -gpu=
-# entirely (keep only ccXY); the two are alternatives, not combinable.
-#
-# Fill in the actual install path below once CUDA 12.2 is installed, e.g.
-# /usr/local/cuda-12.2 (or wherever your installer put it).
-export NVHPC_CUDA_HOME := /usr/local/cuda-12.2
-gpu_target := cc61
+
+# ---- Per-machine overrides (optional) ----------------------------------------
+# If a Makefile.local exists next to this file, it's included here and can
+# override any variable below -- gpu_target, NVHPC_CUDA_HOME, etc. This is the
+# place for machine-specific settings (an old GPU whose codegen support was
+# dropped from your HPC SDK's bundled toolkit, a nonstandard install path,
+# personal build preferences) that don't belong in the shared Makefile.
+# Makefile.local is gitignored -- it's never committed, so your personal setup
+# never gets forced onto other contributors, and their setup never overwrites
+# yours. See Makefile.local.example for the pattern and a worked example.
+-include Makefile.local
+
+# gpu_target defaults to ccnative, which asks nvfortran to auto-detect the
+# compute capability of whatever GPU is actually present at build time -- for
+# almost everyone on a reasonably current GPU, this means `make` just works
+# with no editing required. Override it (in Makefile.local, not here) if you
+# need to target a specific architecture, e.g. cross-compiling for a GPU that
+# isn't the one in the build machine, or an older architecture that needs the
+# workaround described below.
+gpu_target ?= ccnative
 
 # ---- Build mode -------------------------------------------------------------
 # Usage: make               -> release (default)
@@ -50,12 +39,12 @@ BUILD ?= release
 
 srcdir := src
 # Object files (and, via -module below, .mod files) are kept per-build-mode
-# (obj/release, obj/debug, obj/safe) so switching between modes never links
-# stale objects built with different flags, and .mod files from one mode never
-# get picked up while compiling another. This also keeps .mod files out of the
-# project root entirely. The final binary always lands at bin/phasefield either
-# way, so `cd bin && ./phasefield` keeps working regardless of which mode
-# produced it.
+# (obj/release, obj/debug) so switching between `make` and `make BUILD=debug`
+# never links stale objects built with different flags, and .mod files from one
+# mode never get picked up while compiling the other. This also keeps .mod
+# files out of the project root entirely. The final binary always lands at
+# bin/phasefield either way, so `cd bin && ./phasefield` keeps working
+# regardless of which mode produced it.
 objdir := obj/$(BUILD)
 bindir := bin
 
@@ -113,3 +102,5 @@ clean:
 	rm -rf *mod 
 	rm -rf obj
 	rm -f $(bindir)/*
+	
+	

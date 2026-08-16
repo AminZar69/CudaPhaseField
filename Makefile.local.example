@@ -1,0 +1,24 @@
+# Copy this file to `Makefile.local` (not tracked by git -- see .gitignore) to
+# override build settings for your own machine without touching the shared
+# Makefile or affecting other contributors.
+#
+# Most people on a reasonably current GPU don't need this file at all -- the
+# default `gpu_target ?= ccnative` in the main Makefile auto-detects your GPU.
+# This is only needed if:
+#   - Your GPU's architecture has been dropped from your HPC SDK's *bundled*
+#     CUDA toolkit (this happened to Maxwell/Pascal/Volta as of CUDA 13.x),
+#     requiring an explicit -gpu=ccXY plus an external, older CUDA toolkit.
+#   - You want to pin a specific architecture for some other reason (e.g.
+#     cross-compiling for a GPU that isn't in the build machine).
+#
+# Worked example below: a Quadro P4000 (Pascal, compute capability 6.1) paired
+# with an HPC SDK install whose bundled CUDA toolkit (13.2) no longer
+# generates code for Pascal. The fix is a standalone, external CUDA 12.x
+# toolkit (installed separately, NOT part of the HPC SDK -- see
+# https://developer.nvidia.com/cuda-toolkit-archive), pointed to via
+# NVHPC_CUDA_HOME. Check your own GPU's compute capability with `nvaccelinfo`,
+# and adjust ccXY and the CUDA toolkit version to match your driver's reported
+# compatibility (also shown by `nvaccelinfo`).
+
+# gpu_target := cc61
+# export NVHPC_CUDA_HOME := /usr/local/cuda-12.2
